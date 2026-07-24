@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="mul">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexlead | B2B Lead Qualification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .chat { width: 100%; max-width: 520px; background: #ffffff; border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.3); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 100%); padding: 28px 24px; text-align: center; }
+        .logo { width: 50px; height: 50px; background: #4f6ef6; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 10px; }
+        .header h1 { color: #ffffff; font-size: 1.3em; font-weight: 600; }
+        .header p { color: #a0aec0; font-size: 0.8em; margin-top: 4px; }
+        .messages { height: 420px; overflow-y: auto; padding: 20px; background: #f8fafc; display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 85%; padding: 12px 16px; border-radius: 14px; font-size: 0.9em; line-height: 1.5; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .bot { background: #ffffff; color: #1a202c; border: 1px solid #e2e8f0; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .user { background: #4f6ef6; color: #ffffff; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .success { background: #f0fff4; color: #22543d; text-align: center; font-weight: 500; border: 1px solid #c6f6d5; white-space: pre-line; }
+        .footer { padding: 16px 20px; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; }
+        .footer input { flex: 1; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.9em; font-family: 'Inter', sans-serif; outline: none; }
+        .footer input:focus { border-color: #4f6ef6; }
+        .footer button { padding: 12px 20px; background: #4f6ef6; color: #ffffff; border: none; border-radius: 12px; font-weight: 600; font-size: 0.9em; cursor: pointer; font-family: 'Inter', sans-serif; }
+        .footer button:hover { background: #3b52d4; }
+        .footer button:disabled { background: #a0aec0; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="chat">
+        <div class="header">
+            <div class="logo">◆</div>
+            <h1>Nexlead</h1>
+            <p>B2B Lead Qualification · Global</p>
+        </div>
+        <div class="messages" id="msgs"></div>
+        <div class="footer" id="footer">
+            <input type="text" id="input" placeholder="Describe yourself and your needs..." onkeypress="if(event.key==='Enter') send()">
+            <button id="btn" onclick="send()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const URL = "https://desktop-bsdpr8a.tail0f3da6.ts.net/webhook/nexlead";
+        const KEY = "vyjiuW1SxXDfKUlhAaCVt76G5PQkgzcJ";
+
+        const lang = {
+            en: {
+                hello: "Hello! I'm Nexlead, your B2B qualification assistant.\n\nTell me about yourself and your needs in one message, and I'll handle the rest.\n\nExample: \"I'm John, CEO of Acme Corp in New York. Email: john@acme.com. We need AI automation.\"",
+                missing: "I need a bit more: ",
+                thanks: "Thank you! Your profile has been submitted.\n\nWe'll contact you within 48h.\n\nBook a free discovery call: https://calendly.com/saiiah-ali328/30min",
+                error: "Something went wrong. Please try again.",
+                send: "Send"
+            },
+            fr: {
+                hello: "Bonjour ! Je suis Nexlead, votre assistant de qualification B2B.\n\nDécrivez-vous et vos besoins en un message, je m'occupe du reste.\n\nExemple : \"Je suis Jean, PDG de TechParis. Email : jean@techparis.fr. Nous avons besoin d'automatisation IA.\"",
+                missing: "Il me manque : ",
+                thanks: "Merci ! Votre profil a été transmis.\n\nNous vous contacterons sous 48h.\n\nRéservez un appel gratuit : https://calendly.com/saiiah-ali328/30min",
+                error: "Erreur. Veuillez réessayer.",
+                send: "Envoyer"
+            },
+            ar: {
+                hello: "مرحباً! أنا نكسليد، مساعد تأهيل الأعمال.\n\nأخبرني عن نفسك واحتياجاتك في رسالة واحدة، وسأتولى الباقي.\n\nمثال: \"أنا عمر، مدير شركة الرياض. بريدي: omar@riyadh.com. نحتاج أتمتة بالذكاء الاصطناعي.\"",
+                missing: "أحتاج المزيد: ",
+                thanks: "شكراً! تم إرسال ملفك.\n\nسنتواصل معك خلال 48 ساعة.\n\nاحجز مكالمة مجانية: https://calendly.com/saiiah-ali328/30min",
+                error: "خطأ. حاول مرة أخرى.",
+                send: "إرسال"
+            },
+            es: {
+                hello: "¡Hola! Soy Nexlead, tu asistente de cualificación B2B.\n\nCuéntame sobre ti y tus necesidades en un mensaje, yo me encargo del resto.\n\nEjemplo: \"Soy María, CEO de Madrid Tech. Email: maria@madridtech.es. Necesitamos automatización.\"",
+                missing: "Necesito un poco más: ",
+                thanks: "¡Gracias! Tu perfil ha sido enviado.\n\nTe contactaremos en 48h.\n\nReserva una llamada: https://calendly.com/saiiah-ali328/30min",
+                error: "Error. Intenta de nuevo.",
+                send: "Enviar"
+            },
+            it: {
+                hello: "Ciao! Sono Nexlead, il tuo assistente di qualificazione B2B.\n\nParlami di te e delle tue esigenze in un messaggio, al resto penso io.\n\nEsempio: \"Sono Marco, CEO di Roma Tech. Email: marco@romatech.it. Abbiamo bisogno di automazione AI.\"",
+                missing: "Mi serve qualcosa in più: ",
+                thanks: "Grazie! Il tuo profilo è stato inviato.\n\nTi contatteremo entro 48h.\n\nPrenota una chiamata: https://calendly.com/saiiah-ali328/30min",
+                error: "Errore. Riprova.",
+                send: "Invia"
+            }
+        };
+
+        let userLang = "en";
+
+        function detectLang(text) {
+            const t = text.toLowerCase();
+            if (/[\u0600-\u06ff]/.test(t)) return "ar";
+            if (/[àâäéèêëîïôöùûüçœ]/.test(t) && !/[ñáéíóúü]/.test(t)) return "fr";
+            if (/[ñáéíóúü¿¡]/.test(t)) return "es";
+            if (/[ìèéùòà]/.test(t)) return "it";
+            return "en";
+        }
+
+        function t(key) { return lang[userLang] ? lang[userLang][key] : lang["en"][key]; }
+
+        function addMsg(text, cls) {
+            let d = document.createElement("div");
+            d.className = "msg " + (cls || "bot");
+            d.textContent = text;
+            document.getElementById("msgs").appendChild(d);
+            document.getElementById("msgs").scrollTop = document.getElementById("msgs").scrollHeight;
+        }
+
+        function extractInfo(text) {
+            let data = {};
+            let emailMatch = text.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+            if (emailMatch) data.email = emailMatch[1];
+
+            let companyMatch = text.match(/(?:at|from|de|chez|di|of|@)\s+([A-Z][a-zA-Z0-9\s&]+?)(?:\.|,|in|à|en|$|\s+(?:and|we|need|je|nous|nous|nos|our))/i);
+            if (!companyMatch) companyMatch = text.match(/(?:CEO|CTO|CFO|Manager|Director|Founder|PDG|DG)\s+(?:at|of|de|chez|di)\s+([A-Z][a-zA-Z0-9\s&]+?)(?:\.|,|$|\s+(?:and|we|need))/i);
+            if (!companyMatch) companyMatch = text.match(/(?:company|société|entreprise|azienda|empresa)\s+(?:is|est|e)\s+([A-Z][a-zA-Z0-9\s&]+?)(?:\.|,|$)/i);
+            if (companyMatch) data.company = companyMatch[1].trim();
+
+            let jobMatch = text.match(/(?:I am|I'm|je suis|sono|soy|je suis)\s+(?:the\s+)?(?:a\s+)?([A-Z][a-zA-Z\s]+?)(?:,|\.|at|from|de|chez|in|à|$)/i);
+            if (!jobMatch) jobMatch = text.match(/(CEO|CTO|CFO|COO|CMO|VP|Director|Manager|Founder|Owner|PDG|DG|Directeur|Gérant)/i);
+            if (jobMatch) data.job_title = jobMatch[1].trim();
+
+            let countryMatch = text.match(/(?:in|from|à|de|en|nel|في)\s+([A-Z][a-zA-Z\s]+?)(?:\.|,|$|\s+and|\s+we|\s+je|\s+email)/i);
+            if (countryMatch) data.country = countryMatch[1].trim();
+
+            let nameMatch = text.match(/(?:I am|I'm|je suis|sono|soy|ich bin|أنا)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i);
+            if (nameMatch) {
+                let parts = nameMatch[1].split(" ");
+                data.firstname = parts[0];
+                data.lastname = parts.slice(1).join(" ") || "";
+            }
+
+            return data;
+        }
+
+        addMsg(lang.en.hello);
+
+        function send() {
+            let input = document.getElementById("input");
+            let val = input.value.trim();
+            if (!val) return;
+            userLang = detectLang(val);
+            addMsg(val, "user");
+            input.value = "";
+            document.getElementById("btn").disabled = true;
+
+            let info = extractInfo(val);
+            let missing = [];
+            if (!info.email) missing.push("email");
+            if (!info.company) missing.push("company");
+            if (!info.firstname) missing.push("name");
+            if (!info.job_title) missing.push("job title");
+
+            if (missing.length > 0) {
+                setTimeout(() => {
+                    addMsg(t("missing") + missing.join(", ") + ".", "bot");
+                    document.getElementById("btn").disabled = false;
+                }, 500);
+                return;
+            }
+
+            info.country = info.country || "Not specified";
+            info.source = "Web Chatbot";
+            info.notes = val;
+
+            fetch(URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "x-api-key": KEY },
+                body: JSON.stringify({ lead: info })
+            }).then(r => {
+                if (r.ok) addMsg(t("thanks"), "success");
+                else addMsg(t("error"), "error");
+            }).catch(() => addMsg(t("error"), "error"));
+
+            document.getElementById("footer").style.display = "none";
+        }
+    </script>
+</body>
+</html>

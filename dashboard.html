@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexlead | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; padding: 40px; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; display: none; }
+        h1 { font-size: 2em; font-weight: 700; margin-bottom: 8px; }
+        .subtitle { color: #94a3b8; margin-bottom: 32px; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+        .card { background: #1e293b; border-radius: 16px; padding: 24px; }
+        .card .label { color: #94a3b8; font-size: 0.85em; margin-bottom: 8px; }
+        .card .value { font-size: 2em; font-weight: 700; }
+        .card .hot { color: #ef4444; }
+        .card .warm { color: #f59e0b; }
+        .card .cold { color: #3b82f6; }
+        .table-card { background: #1e293b; border-radius: 16px; padding: 24px; margin-top: 32px; }
+        .table-card h2 { margin-bottom: 16px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; color: #94a3b8; font-weight: 500; padding: 12px 8px; border-bottom: 1px solid #334155; font-size: 0.85em; }
+        td { padding: 12px 8px; border-bottom: 1px solid #1e293b; font-size: 0.9em; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75em; font-weight: 600; }
+        .badge.CHAUD { background: #fecaca; color: #991b1b; }
+        .badge.TIEDE { background: #fed7aa; color: #9a3412; }
+        .badge.FROID { background: #bfdbfe; color: #1e40af; }
+        button { background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-family: 'Inter', sans-serif; margin-top: 16px; }
+        button:hover { background: #2563eb; }
+        .locked { text-align: center; margin-top: 100px; }
+        .locked input { padding: 12px; border-radius: 8px; border: none; font-size: 1em; margin-right: 8px; }
+        .locked button { margin-top: 0; }
+    </style>
+</head>
+<body>
+
+<div class="locked" id="lockScreen">
+    <h1>🔒 Nexlead Dashboard</h1>
+    <input type="password" id="passInput" placeholder="Mot de passe..." onkeypress="if(event.key==='Enter') unlock()">
+    <button onclick="unlock()">Accéder</button>
+</div>
+
+<div class="container" id="mainContent">
+    <h1>📊 Nexlead Dashboard</h1>
+    <p class="subtitle">Real-time lead qualification overview</p>
+    
+    <div class="grid">
+        <div class="card">
+            <div class="label">Total Leads</div>
+            <div class="value" id="total">0</div>
+        </div>
+        <div class="card">
+            <div class="label">Hot</div>
+            <div class="value hot" id="hot">0</div>
+        </div>
+        <div class="card">
+            <div class="label">Warm</div>
+            <div class="value warm" id="warm">0</div>
+        </div>
+        <div class="card">
+            <div class="label">Cold</div>
+            <div class="value cold" id="cold">0</div>
+        </div>
+    </div>
+    
+    <div class="table-card">
+        <h2>Recent Leads</h2>
+        <table>
+            <thead>
+                <tr><th>Name</th><th>Company</th><th>Country</th><th>Score</th><th>Status</th></tr>
+            </thead>
+            <tbody id="leadsTable"></tbody>
+        </table>
+        <button onclick="loadLeads()">Refresh</button>
+    </div>
+</div>
+
+<script>
+const LEADS_KEY = "nexlead_dashboard_leads";
+const PASSWORD = "nexlead2026";
+
+function unlock() {
+    if (document.getElementById("passInput").value === PASSWORD) {
+        document.getElementById("lockScreen").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+        loadLeads();
+    } else {
+        alert("Mot de passe incorrect");
+    }
+}
+
+let leads = JSON.parse(localStorage.getItem(LEADS_KEY) || "[]");
+if (leads.length === 0) {
+    leads = [
+        { firstname: "Omar", lastname: "Al-Sheikh", company: "Riyadh Technology", country: "Saudi Arabia", score: 80, statut: "CHAUD" },
+        { firstname: "Maria", lastname: "Garcia", company: "Madrid Tech", country: "Spain", score: 75, statut: "CHAUD" },
+        { firstname: "James", lastname: "Wilson", company: "CloudBase Solutions", country: "UK", score: 70, statut: "CHAUD" },
+        { firstname: "Layla", lastname: "Abbas", company: "Dubai Trade", country: "UAE", score: 55, statut: "TIEDE" },
+        { firstname: "Marco", lastname: "Rossi", company: "Roma Tech", country: "Italy", score: 45, statut: "TIEDE" },
+        { firstname: "Mohamed", lastname: "Rahim", company: "Algerie Tech", country: "Algeria", score: 30, statut: "FROID" }
+    ];
+    localStorage.setItem(LEADS_KEY, JSON.stringify(leads));
+}
+
+function loadLeads() {
+    leads = JSON.parse(localStorage.getItem(LEADS_KEY) || "[]");
+    document.getElementById("total").textContent = leads.length;
+    document.getElementById("hot").textContent = leads.filter(l => l.statut === "CHAUD").length;
+    document.getElementById("warm").textContent = leads.filter(l => l.statut === "TIEDE").length;
+    document.getElementById("cold").textContent = leads.filter(l => l.statut === "FROID").length;
+    
+    let tbody = document.getElementById("leadsTable");
+    tbody.innerHTML = leads.slice().reverse().map(l => 
+        `<tr><td>${l.firstname} ${l.lastname}</td><td>${l.company}</td><td>${l.country}</td><td>${l.score}/100</td><td><span class="badge ${l.statut}">${l.statut}</span></td></tr>`
+    ).join("");
+}
+</script>
+
+</body>
+</html>

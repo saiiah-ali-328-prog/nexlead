@@ -105,31 +105,76 @@
         }
 
         function extractInfo(text) {
-            let data = {};
-            let emailMatch = text.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-            if (emailMatch) data.email = emailMatch[1];
+    let data = {};
+    
+    // Email
+    let emailMatch = text.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+    if (emailMatch) data.email = emailMatch[1];
 
-            let companyMatch = text.match(/(?:at|from|de|chez|di|of|@)\s+([A-Z][a-zA-Z0-9\s&]+?)(?:\.|,|in|à|en|$|\s+(?:and|we|need|je|nous|nous|nos|our))/i);
-            if (!companyMatch) companyMatch = text.match(/(?:CEO|CTO|CFO|Manager|Director|Founder|PDG|DG)\s+(?:at|of|de|chez|di)\s+([A-Z][a-zA-Z0-9\s&]+?)(?:\.|,|$|\s+(?:and|we|need))/i);
-            if (!companyMatch) companyMatch = text.match(/(?:company|société|entreprise|azienda|empresa)\s+(?:is|est|e)\s+([A-Z][a-zA-Z0-9\s&]+?)(?:\.|,|$)/i);
-            if (companyMatch) data.company = companyMatch[1].trim();
-
-            let jobMatch = text.match(/(?:I am|I'm|je suis|sono|soy|je suis)\s+(?:the\s+)?(?:a\s+)?([A-Z][a-zA-Z\s]+?)(?:,|\.|at|from|de|chez|in|à|$)/i);
-            if (!jobMatch) jobMatch = text.match(/(CEO|CTO|CFO|COO|CMO|VP|Director|Manager|Founder|Owner|PDG|DG|Directeur|Gérant)/i);
-            if (jobMatch) data.job_title = jobMatch[1].trim();
-
-            let countryMatch = text.match(/(?:in|from|à|de|en|nel|في)\s+([A-Z][a-zA-Z\s]+?)(?:\.|,|$|\s+and|\s+we|\s+je|\s+email)/i);
-            if (countryMatch) data.country = countryMatch[1].trim();
-
-            let nameMatch = text.match(/(?:I am|I'm|je suis|sono|soy|ich bin|أنا)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i);
-            if (nameMatch) {
-                let parts = nameMatch[1].split(" ");
-                data.firstname = parts[0];
-                data.lastname = parts.slice(1).join(" ") || "";
-            }
-
-            return data;
+    // Name - patterns multilingues
+    let namePatterns = [
+        /(?:I am|I'm|je suis|sono|soy|ich bin|أنا|je m'appelle|moi c'est|انا)\s+([A-Z\u0600-\u06ff][a-z\u0600-\u06ff]+(?:\s+[A-Z\u0600-\u06ff][a-z\u0600-\u06ff]+)?)/i,
+        /(?:name is|nom est|nome è|nombre es|اسمي)\s+([A-Z\u0600-\u06ff][a-z\u0600-\u06ff]+(?:\s+[A-Z\u0600-\u06ff][a-z\u0600-\u06ff]+)?)/i,
+        /([A-Z][a-z]+)\s+([A-Z][a-z]+)(?:\s+(?:CEO|CTO|CFO|Manager|Director|Founder|مدير|مديرة))/i
+    ];
+    
+    for (let p of namePatterns) {
+        let m = text.match(p);
+        if (m) {
+            let fullName = m[1];
+            if (m[2]) fullName = m[1] + " " + m[2];
+            let parts = fullName.trim().split(/\s+/);
+            data.firstname = parts[0];
+            data.lastname = parts.slice(1).join(" ") || "";
+            break;
         }
+    }
+
+    // Company
+    let companyPatterns = [
+        /(?:شركة|company|société|entreprise|azienda|empresa)\s+(?:is\s+)?([A-Z\u0600-\u06ff][a-zA-Z0-9\u0600-\u06ff\s]+?)(?:\.|,|$|\s+(?:and|we|need|je|nous|في|ب))/i,
+        /(?:at|from|de|chez|di|of|في)\s+(?:the\s+)?([A-Z\u0600-\u06ff][a-zA-Z0-9\u0600-\u06ff\s&]+?)(?:\.|,|in|à|en|$|\s+(?:and|we|need|je|nous))/i,
+        /(CEO|CTO|CFO|Manager|Director|Founder|مدير|مديرة)\s+(?:at|of|de|chez|في)\s+([A-Z\u0600-\u06ff][a-zA-Z0-9\u0600-\u06ff\s&]+?)(?:\.|,|$)/i
+    ];
+    
+    for (let p of companyPatterns) {
+        let m = text.match(p);
+        if (m) {
+            data.company = (m[2] || m[1]).trim();
+            break;
+        }
+    }
+
+    // Job title
+    let jobPatterns = [
+        /(CEO|CTO|CFO|COO|CMO|VP|Director|Manager|Founder|Owner|PDG|DG|Directeur|Gérant|مدير|مديرة|مهندس|دكتور)/i,
+        /(?:I am|I'm|je suis|sono|soy|أنا)\s+(?:the\s+)?(?:a\s+)?([A-Z\u0600-\u06ff][a-z\u0600-\u06ff\s]{2,30}?)(?:,|\.|at|from|de|chez|in|à|$)/i
+    ];
+    
+    for (let p of jobPatterns) {
+        let m = text.match(p);
+        if (m) {
+            data.job_title = m[1].trim();
+            break;
+        }
+    }
+
+    // Country
+    let countryPatterns = [
+        /(?:in|from|à|de|en|nel|في|من)\s+([A-Z][a-zA-Z\s]+?)(?:\.|,|$|\s+and|\s+we|\s+je|\s+email)/i,
+        /(?:pays|country|paese|país|بلد)\s*(?::|,|\s+)([A-Z][a-zA-Z\s]+?)(?:\.|,|$)/i
+    ];
+    
+    for (let p of countryPatterns) {
+        let m = text.match(p);
+        if (m) {
+            data.country = m[1].trim();
+            break;
+        }
+    }
+
+    return data;
+}
 
         addMsg(lang.en.hello);
 

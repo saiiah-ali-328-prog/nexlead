@@ -3,220 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexlead | B2B Lead Qualification</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Nexlead B2B | Lead Qualification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .chat { width: 100%; max-width: 520px; background: #ffffff; border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.3); overflow: hidden; }
-        .header { background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 100%); padding: 28px 24px; text-align: center; }
-        .logo { width: 50px; height: 50px; background: #4f6ef6; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 10px; }
-        .header h1 { color: #ffffff; font-size: 1.3em; font-weight: 600; }
-        .header p { color: #a0aec0; font-size: 0.8em; margin-top: 4px; }
-        .messages { height: 420px; overflow-y: auto; padding: 20px; background: #f8fafc; display: flex; flex-direction: column; gap: 10px; }
-        .msg { max-width: 85%; padding: 12px 16px; border-radius: 14px; font-size: 0.9em; line-height: 1.5; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .bot { background: #ffffff; color: #1a202c; border: 1px solid #e2e8f0; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .user { background: #4f6ef6; color: #ffffff; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .success { background: #f0fff4; color: #22543d; text-align: center; font-weight: 500; border: 1px solid #c6f6d5; white-space: pre-line; }
-        .footer { padding: 16px 20px; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; }
-        .footer input { flex: 1; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.9em; font-family: 'Inter', sans-serif; outline: none; }
-        .footer input:focus { border-color: #4f6ef6; }
-        .footer button { padding: 12px 20px; background: #4f6ef6; color: #ffffff; border: none; border-radius: 12px; font-weight: 600; font-size: 0.9em; cursor: pointer; font-family: 'Inter', sans-serif; }
-        .footer button:hover { background: #3b52d4; }
-        .footer button:disabled { background: #a0aec0; cursor: not-allowed; }
+        .app { width: 100%; max-width: 520px; background: #ffffff; border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.4); overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; }
+        .header { background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 100%); padding: 20px; text-align: center; color: white; }
+        .logo { width: 44px; height: 44px; background: #4f6ef6; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 6px; }
+        .header h1 { font-size: 1.3em; font-weight: 700; }
+        .header p { font-size: 0.75em; opacity: 0.7; }
+        .content { flex: 1; overflow-y: auto; padding: 16px; background: #f8fafc; }
+        .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+        .card h3 { font-size: 1em; font-weight: 600; }
+        .card .price { font-size: 1.2em; font-weight: 700; color: #4f6ef6; }
+        .card ul { list-style: none; margin: 6px 0; }
+        .card li { font-size: 0.8em; color: #64748b; padding: 1px 0; }
+        .card li::before { content: "✓ "; color: #10b981; font-weight: bold; }
+        .btn { display: block; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 0.9em; cursor: pointer; text-align: center; margin-top: 8px; font-family: 'Inter', sans-serif; }
+        .btn-blue { background: #4f6ef6; color: white; }
+        .btn-green { background: #10b981; color: white; }
+        .section { font-weight: 700; color: #1a202c; margin: 14px 0 6px 0; font-size: 0.9em; }
+        .chat-msg { padding: 8px 12px; border-radius: 10px; margin: 4px 0; font-size: 0.8em; line-height: 1.4; }
+        .chat-bot { background: #f1f5f9; color: #1a202c; }
+        .chat-success { background: #f0fff4; color: #22543d; text-align: center; font-weight: 500; white-space: pre-line; }
+        .input-row { display: flex; gap: 6px; margin-top: 8px; }
+        .input-row input { flex: 1; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.85em; }
+        .input-row button { padding: 10px 14px; background: #4f6ef6; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+        .lang-switch { text-align: right; padding: 4px 16px; background: #f8fafc; }
+        .lang-switch button { background: none; border: 1px solid #e2e8f0; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75em; font-family: 'Inter', sans-serif; }
     </style>
 </head>
 <body>
-    <div class="chat">
-        <div class="header">
-            <div class="logo">◆</div>
-            <h1>Nexlead</h1>
-            <p>B2B Lead Qualification · Global</p>
-        </div>
-        <div class="messages" id="msgs"></div>
-        <div class="footer" id="footer">
-            <input type="text" id="input" placeholder="Describe yourself and your needs..." onkeypress="if(event.key==='Enter') send()">
-            <button id="btn" onclick="send()">Send</button>
-        </div>
-    </div>
+<div class="app" id="app"></div>
+<script>
+const KEY = "vyjiuW1SxXDfKUlhAaCVt76G5PQkgzcJ";
+const WEBHOOK = "https://desktop-bsdpr8a.tail0f3da6.ts.net/webhook/nexlead";
 
-    <script>
-        const URL = "https://desktop-bsdpr8a.tail0f3da6.ts.net/webhook/nexlead";
-        const KEY = "vyjiuW1SxXDfKUlhAaCVt76G5PQkgzcJ";
+const LINKS = {
+    standard: "https://nowpayments.io/payment/?iid=4745520915",
+    premium: "https://nowpayments.io/payment/?iid=5357217903",
+    starter_m: "https://nowpayments.io/payment/?iid=4907380590",
+    business_m: "https://nowpayments.io/payment/?iid=6237506640",
+    enterprise_m: "https://nowpayments.io/payment/?iid=5236180119",
+    starter_a: "https://nowpayments.io/payment/?iid=4579176139",
+    business_a: "https://nowpayments.io/payment/?iid=5158335854",
+    enterprise_a: "https://nowpayments.io/payment/?iid=4369256050"
+};
 
-        const lang = {
-            en: {
-                hello: "Hello! I'm Nexlead, your B2B qualification assistant.\n\nTell me about yourself and your needs in one message, and I'll handle the rest.\n\nExample: \"I'm John, CEO of Acme Corp in New York. Email: john@acme.com. We need AI automation.\"",
-                missing: "I need a bit more: ",
-                thanks: "Thank you! Your profile has been submitted.\n\nWe'll contact you within 48h.\n\nBook a free discovery call: https://calendly.com/saiiah-ali328/30min",
-                error: "Something went wrong. Please try again.",
-                send: "Send"
-            },
-            fr: {
-                hello: "Bonjour ! Je suis Nexlead, votre assistant de qualification B2B.\n\nDécrivez-vous et vos besoins en un message, je m'occupe du reste.\n\nExemple : \"Je suis Jean, PDG de TechParis. Email : jean@techparis.fr. Nous avons besoin d'automatisation IA.\"",
-                missing: "Il me manque : ",
-                thanks: "Merci ! Votre profil a été transmis.\n\nNous vous contacterons sous 48h.\n\nRéservez un appel gratuit : https://calendly.com/saiiah-ali328/30min",
-                error: "Erreur. Veuillez réessayer.",
-                send: "Envoyer"
-            },
-            ar: {
-                hello: "مرحباً! أنا نكسليد، مساعد تأهيل الأعمال.\n\nأخبرني عن نفسك واحتياجاتك في رسالة واحدة، وسأتولى الباقي.\n\nمثال: \"أنا عمر، مدير شركة الرياض. بريدي: omar@riyadh.com. نحتاج أتمتة بالذكاء الاصطناعي.\"",
-                missing: "أحتاج المزيد: ",
-                thanks: "شكراً! تم إرسال ملفك.\n\nسنتواصل معك خلال 48 ساعة.\n\nاحجز مكالمة مجانية: https://calendly.com/saiiah-ali328/30min",
-                error: "خطأ. حاول مرة أخرى.",
-                send: "إرسال"
-            },
-            es: {
-                hello: "¡Hola! Soy Nexlead, tu asistente de cualificación B2B.\n\nCuéntame sobre ti y tus necesidades en un mensaje, yo me encargo del resto.\n\nEjemplo: \"Soy María, CEO de Madrid Tech. Email: maria@madridtech.es. Necesitamos automatización.\"",
-                missing: "Necesito un poco más: ",
-                thanks: "¡Gracias! Tu perfil ha sido enviado.\n\nTe contactaremos en 48h.\n\nReserva una llamada: https://calendly.com/saiiah-ali328/30min",
-                error: "Error. Intenta de nuevo.",
-                send: "Enviar"
-            },
-            it: {
-                hello: "Ciao! Sono Nexlead, il tuo assistente di qualificazione B2B.\n\nParlami di te e delle tue esigenze in un messaggio, al resto penso io.\n\nEsempio: \"Sono Marco, CEO di Roma Tech. Email: marco@romatech.it. Abbiamo bisogno di automazione AI.\"",
-                missing: "Mi serve qualcosa in più: ",
-                thanks: "Grazie! Il tuo profilo è stato inviato.\n\nTi contatteremo entro 48h.\n\nPrenota una chiamata: https://calendly.com/saiiah-ali328/30min",
-                error: "Errore. Riprova.",
-                send: "Invia"
-            }
-        };
+let lang = "fr", leadData = {};
 
-        let userLang = "en";
-
-        function detectLang(text) {
-            const t = text.toLowerCase();
-            if (/[\u0600-\u06ff]/.test(t)) return "ar";
-            if (/[àâäéèêëîïôöùûüçœ]/.test(t) && !/[ñáéíóúü]/.test(t)) return "fr";
-            if (/[ñáéíóúü¿¡]/.test(t)) return "es";
-            if (/[ìèéùòà]/.test(t)) return "it";
-            return "en";
-        }
-
-        function t(key) { return lang[userLang] ? lang[userLang][key] : lang["en"][key]; }
-
-        function addMsg(text, cls) {
-            let d = document.createElement("div");
-            d.className = "msg " + (cls || "bot");
-            d.textContent = text;
-            document.getElementById("msgs").appendChild(d);
-            document.getElementById("msgs").scrollTop = document.getElementById("msgs").scrollHeight;
-        }
-
-        function extractInfo(text) {
-    let data = {};
-    
-    // Email
-    let emailMatch = text.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-    if (emailMatch) data.email = emailMatch[1];
-
-    // Name - patterns multilingues
-    let namePatterns = [
-        /(?:I am|I'm|je suis|sono|soy|ich bin|أنا|je m'appelle|moi c'est|انا)\s+([A-Z\u0600-\u06ff][a-z\u0600-\u06ff]+(?:\s+[A-Z\u0600-\u06ff][a-z\u0600-\u06ff]+)?)/i,
-        /(?:name is|nom est|nome è|nombre es|اسمي)\s+([A-Z\u0600-\u06ff][a-z\u0600-\u06ff]+(?:\s+[A-Z\u0600-\u06ff][a-z\u0600-\u06ff]+)?)/i,
-        /([A-Z][a-z]+)\s+([A-Z][a-z]+)(?:\s+(?:CEO|CTO|CFO|Manager|Director|Founder|مدير|مديرة))/i
-    ];
-    
-    for (let p of namePatterns) {
-        let m = text.match(p);
-        if (m) {
-            let fullName = m[1];
-            if (m[2]) fullName = m[1] + " " + m[2];
-            let parts = fullName.trim().split(/\s+/);
-            data.firstname = parts[0];
-            data.lastname = parts.slice(1).join(" ") || "";
-            break;
-        }
+const T = {
+    fr: {
+        menu_title:"Nexlead B2B",menu_sub:"Qualification de leads · International",
+        why:"Pourquoi Nexlead ?",
+        why1:"100% Automatisé – IA en 2 min",why2:"Multilingue – 10+ langues",why3:"Scoring CHAUD/TIEDE/FROID",why4:"Rapport PDF (Premium)",why5:"Livraison 2h à 24h",
+        how:"Comment ça marche ?",
+        how1:"1. Choisissez votre offre",how2:"2. Décrivez votre prospect",how3:"3. Paiement sécurisé",how4:"4. Recevez votre rapport",
+        offers:"Nos offres",
+        std:"Standard",stdP:"50 USD",std1:"Qualification complète",std2:"Scoring intelligent",std3:"Email + Calendly",std4:"Livraison 24h",
+        prem:"Premium",premP:"100 USD",prem1:"Tout le pack Standard",prem2:"Rapport PDF détaillé",prem3:"Relance automatique",prem4:"Livraison 2h",
+        subs:"Abonnements",annual:"Annuel (-17%)",
+        start:"Starter",startP:"200 USD/mois",startL:"5 leads/mois",
+        bus:"Business",busP:"500 USD/mois",busL:"15 leads/mois",
+        ent:"Enterprise",entP:"1000 USD/mois",entL:"40 leads/mois",
+        pay:"Payer maintenant",
+        qual:"Décrivez votre prospect (nom, email, entreprise, pays, poste, besoins) :",
+        thanks:"✅ Merci ! Votre lead est qualifié.\n\nNous vous contactons sous 48h.\n📅 RDV : https://calendly.com/saiiah-ali328/30min",
+        error:"❌ Erreur. Réessayez.",
+        back:"← Retour"
+    },
+    en: {
+        menu_title:"Nexlead B2B",menu_sub:"Lead Qualification · International",
+        why:"Why Nexlead ?",
+        why1:"100% Automated – AI in 2 min",why2:"Multilingual – 10+ languages",why3:"HOT/WARM/COLD Scoring",why4:"PDF Report (Premium)",why5:"Delivery 2h to 24h",
+        how:"How it works ?",
+        how1:"1. Choose your offer",how2:"2. Describe your prospect",how3:"3. Secure payment",how4:"4. Receive your report",
+        offers:"Our offers",
+        std:"Standard",stdP:"50 USD",std1:"Full qualification",std2:"Smart scoring",std3:"Email + Calendly",std4:"Delivery 24h",
+        prem:"Premium",premP:"100 USD",prem1:"All Standard features",prem2:"Detailed PDF report",prem3:"Auto follow-up",prem4:"Delivery 2h",
+        subs:"Subscriptions",annual:"Annual (-17%)",
+        start:"Starter",startP:"200 USD/mo",startL:"5 leads/mo",
+        bus:"Business",busP:"500 USD/mo",busL:"15 leads/mo",
+        ent:"Enterprise",entP:"1000 USD/mo",entL:"40 leads/mo",
+        pay:"Pay now",
+        qual:"Describe your prospect (name, email, company, country, job title, needs):",
+        thanks:"✅ Thank you! Your lead is qualified.\n\nWe'll contact you within 48h.\n📅 RDV: https://calendly.com/saiiah-ali328/30min",
+        error:"❌ Error. Try again.",
+        back:"← Back"
     }
+};
 
-    // Company
-    let companyPatterns = [
-        /(?:شركة|company|société|entreprise|azienda|empresa)\s+(?:is\s+)?([A-Z\u0600-\u06ff][a-zA-Z0-9\u0600-\u06ff\s]+?)(?:\.|,|$|\s+(?:and|we|need|je|nous|في|ب))/i,
-        /(?:at|from|de|chez|di|of|في)\s+(?:the\s+)?([A-Z\u0600-\u06ff][a-zA-Z0-9\u0600-\u06ff\s&]+?)(?:\.|,|in|à|en|$|\s+(?:and|we|need|je|nous))/i,
-        /(CEO|CTO|CFO|Manager|Director|Founder|مدير|مديرة)\s+(?:at|of|de|chez|في)\s+([A-Z\u0600-\u06ff][a-zA-Z0-9\u0600-\u06ff\s&]+?)(?:\.|,|$)/i
-    ];
-    
-    for (let p of companyPatterns) {
-        let m = text.match(p);
-        if (m) {
-            data.company = (m[2] || m[1]).trim();
-            break;
-        }
-    }
+let t = T.fr;
 
-    // Job title
-    let jobPatterns = [
-        /(CEO|CTO|CFO|COO|CMO|VP|Director|Manager|Founder|Owner|PDG|DG|Directeur|Gérant|مدير|مديرة|مهندس|دكتور)/i,
-        /(?:I am|I'm|je suis|sono|soy|أنا)\s+(?:the\s+)?(?:a\s+)?([A-Z\u0600-\u06ff][a-z\u0600-\u06ff\s]{2,30}?)(?:,|\.|at|from|de|chez|in|à|$)/i
-    ];
-    
-    for (let p of jobPatterns) {
-        let m = text.match(p);
-        if (m) {
-            data.job_title = m[1].trim();
-            break;
-        }
-    }
+function render(h) { document.getElementById("app").innerHTML = h; }
 
-    // Country
-    let countryPatterns = [
-        /(?:in|from|à|de|en|nel|في|من)\s+([A-Z][a-zA-Z\s]+?)(?:\.|,|$|\s+and|\s+we|\s+je|\s+email)/i,
-        /(?:pays|country|paese|país|بلد)\s*(?::|,|\s+)([A-Z][a-zA-Z\s]+?)(?:\.|,|$)/i
-    ];
-    
-    for (let p of countryPatterns) {
-        let m = text.match(p);
-        if (m) {
-            data.country = m[1].trim();
-            break;
-        }
-    }
-
-    return data;
+function menu() {
+    let h = `<div class="lang-switch"><button onclick="switchLang('fr')">FR</button> <button onclick="switchLang('en')">EN</button></div>`;
+    h += `<div class="header"><div class="logo">◆</div><h1>${t.menu_title}</h1><p>${t.menu_sub}</p></div><div class="content">`;
+    h += `<div class="section">${t.why}</div>`;
+    [t.why1,t.why2,t.why3,t.why4,t.why5].forEach(i => h += `<div class="chat-msg chat-bot">✓ ${i}</div>`);
+    h += `<div class="section">${t.how}</div>`;
+    [t.how1,t.how2,t.how3,t.how4].forEach(i => h += `<div class="chat-msg chat-bot">${i}</div>`);
+    h += `<div class="section">${t.offers}</div>`;
+    h += offerCard(t.std,t.stdP,[t.std1,t.std2,t.std3,t.std4],LINKS.standard);
+    h += offerCard(t.prem,t.premP,[t.prem1,t.prem2,t.prem3,t.prem4],LINKS.premium);
+    h += `<div class="section">${t.subs}</div>`;
+    h += subCard(t.start,t.startP,t.startL,LINKS.starter_m,LINKS.starter_a);
+    h += subCard(t.bus,t.busP,t.busL,LINKS.business_m,LINKS.business_a);
+    h += subCard(t.ent,t.entP,t.entL,LINKS.enterprise_m,LINKS.enterprise_a);
+    h += `<button class="btn btn-blue" onclick="startQual()">💬 ${t.qual}</button>`;
+    h += `</div>`; render(h);
 }
 
-        addMsg(lang.en.hello);
+function offerCard(name,price,items,link) {
+    let h = `<div class="card"><h3>${name} <span class="price">${price}</span></h3><ul>`;
+    items.forEach(i => h += `<li>${i}</li>`);
+    h += `</ul><a href="${link}" target="_blank"><button class="btn btn-green">${t.pay}</button></a></div>`;
+    return h;
+}
 
-        function send() {
-            let input = document.getElementById("input");
-            let val = input.value.trim();
-            if (!val) return;
-            userLang = detectLang(val);
-            addMsg(val, "user");
-            input.value = "";
-            document.getElementById("btn").disabled = true;
+function subCard(name,price,leads,linkM,linkA) {
+    return `<div class="card"><h3>${name} <span class="price">${price}</span></h3><p style="font-size:0.8em;color:#64748b;">${leads} | ${t.annual}</p><a href="${linkM}" target="_blank"><button class="btn btn-green">${t.pay} (Mensuel)</button></a><a href="${linkA}" target="_blank"><button class="btn btn-green">${t.pay} (Annuel)</button></a></div>`;
+}
 
-            let info = extractInfo(val);
-            let missing = [];
-            if (!info.email) missing.push("email");
-            if (!info.company) missing.push("company");
-            if (!info.firstname) missing.push("name");
-            if (!info.job_title) missing.push("job title");
+function switchLang(l) { lang = l; t = T[l]; menu(); }
 
-            if (missing.length > 0) {
-                setTimeout(() => {
-                    addMsg(t("missing") + missing.join(", ") + ".", "bot");
-                    document.getElementById("btn").disabled = false;
-                }, 500);
-                return;
-            }
+function startQual() {
+    let h = `<div class="header"><div class="logo">◆</div><h1>${t.menu_title}</h1></div><div class="content">`;
+    h += `<div class="chat-msg chat-bot">${t.qual}</div>`;
+    h += `<div id="chatMsgs"></div>`;
+    h += `<div class="input-row"><input id="uin" placeholder="..."><button onclick="sendQual()">➤</button></div>`;
+    h += `<button class="btn btn-blue" onclick="menu()">${t.back}</button></div>`;
+    render(h);
+}
 
-            info.country = info.country || "Not specified";
-            info.source = "Web Chatbot";
-            info.notes = val;
+function sendQual() {
+    let v = document.getElementById("uin").value.trim();
+    if(!v) return;
+    let msgs = document.getElementById("chatMsgs");
+    msgs.innerHTML += `<div class="chat-msg chat-bot" style="text-align:right;background:#4f6ef6;color:white;">${v}</div>`;
+    document.getElementById("uin").value = "";
+    
+    let em = v.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+    let nm = v.match(/(?:I am|I'm|je suis|sono|soy|أنا|ich bin)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i);
+    leadData.email = em ? em[1] : "";
+    leadData.firstname = nm ? nm[1].split(" ")[0] : "";
+    leadData.lastname = nm && nm[1].split(" ")[1] ? nm[1].split(" ")[1] : "";
+    leadData.source = "Web Chatbot";
+    leadData.notes = v;
 
-            fetch(URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json", "x-api-key": KEY },
-                body: JSON.stringify({ lead: info })
-            }).then(r => {
-                if (r.ok) addMsg(t("thanks"), "success");
-                else addMsg(t("error"), "error");
-            }).catch(() => addMsg(t("error"), "error"));
+    fetch(WEBHOOK, {method:"POST",headers:{"Content-Type":"application/json","x-api-key":KEY},body:JSON.stringify({lead:leadData})})
+    .then(r => { if(r.ok) msgs.innerHTML += `<div class="chat-msg chat-success">${t.thanks}</div>`; else msgs.innerHTML += `<div class="chat-msg chat-success">${t.error}</div>`; })
+    .catch(() => msgs.innerHTML += `<div class="chat-msg chat-success">${t.error}</div>`);
+    document.querySelector(".input-row").style.display = "none";
+}
 
-            document.getElementById("footer").style.display = "none";
-        }
-    </script>
+menu();
+</script>
 </body>
 </html>

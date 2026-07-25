@@ -3,43 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexlead B2B | Lead Qualification</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Nexlead B2B | Intelligent Lead Qualification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root { --bg: #050510; --card: rgba(15,15,35,0.8); --blue: #3b82f6; --purple: #8b5cf6; --cyan: #06b6d4; --text: #e2e8f0; --sub: #94a3b8; --border: rgba(255,255,255,0.06); --glass: rgba(255,255,255,0.03); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .app { width: 100%; max-width: 520px; background: #ffffff; border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.4); overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; }
-        .header { background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 100%); padding: 20px; text-align: center; color: white; }
-        .logo { width: 44px; height: 44px; background: #4f6ef6; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 6px; }
-        .header h1 { font-size: 1.3em; font-weight: 700; }
-        .header p { font-size: 0.75em; opacity: 0.7; }
-        .content { flex: 1; overflow-y: auto; padding: 16px; background: #f8fafc; }
-        .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
-        .card h3 { font-size: 1em; font-weight: 600; }
-        .card .price { font-size: 1.2em; font-weight: 700; color: #4f6ef6; }
-        .card ul { list-style: none; margin: 6px 0; }
-        .card li { font-size: 0.8em; color: #64748b; padding: 1px 0; }
-        .card li::before { content: "✓ "; color: #10b981; font-weight: bold; }
-        .btn { display: block; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 0.9em; cursor: pointer; text-align: center; margin-top: 8px; font-family: 'Inter', sans-serif; }
-        .btn-blue { background: #4f6ef6; color: white; }
-        .btn-green { background: #10b981; color: white; }
-        .section { font-weight: 700; color: #1a202c; margin: 14px 0 6px 0; font-size: 0.9em; }
-        .chat-msg { padding: 8px 12px; border-radius: 10px; margin: 4px 0; font-size: 0.8em; line-height: 1.4; }
-        .chat-bot { background: #f1f5f9; color: #1a202c; }
-        .chat-success { background: #f0fff4; color: #22543d; text-align: center; font-weight: 500; white-space: pre-line; }
-        .input-row { display: flex; gap: 6px; margin-top: 8px; }
-        .input-row input { flex: 1; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.85em; }
-        .input-row button { padding: 10px 14px; background: #4f6ef6; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
-        .lang-switch { text-align: right; padding: 4px 16px; background: #f8fafc; }
-        .lang-switch button { background: none; border: 1px solid #e2e8f0; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75em; font-family: 'Inter', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 30% 20%, rgba(59,130,246,0.08) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(139,92,246,0.08) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(6,182,212,0.04) 0%, transparent 60%); z-index: -1; animation: bgMove 20s ease-in-out infinite; }
+        @keyframes bgMove { 0%,100% { transform: translate(0,0); } 33% { transform: translate(1%,-1%); } 66% { transform: translate(-1%,1%); } }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        section { margin: 80px 0; }
+        .glass { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 24px; padding: 40px; }
+        h1 { font-size: 3em; font-weight: 800; background: linear-gradient(135deg, #fff 0%, var(--blue) 50%, var(--purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.1; }
+        h2 { font-size: 2em; font-weight: 700; margin-bottom: 24px; }
+        .subtitle { color: var(--sub); font-size: 1.1em; margin: 16px 0 32px 0; max-width: 500px; line-height: 1.6; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        .feature { background: var(--card); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 16px; padding: 24px; transition: all 0.3s; }
+        .feature:hover { border-color: var(--blue); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(59,130,246,0.1); }
+        .feature .icon { font-size: 2em; margin-bottom: 12px; }
+        .feature h3 { font-size: 1.1em; font-weight: 600; margin-bottom: 8px; }
+        .feature p { color: var(--sub); font-size: 0.9em; line-height: 1.5; }
+        .card { background: var(--card); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 20px; padding: 32px; transition: all 0.3s; position: relative; overflow: hidden; }
+        .card:hover { border-color: var(--purple); }
+        .card.premium { border-color: var(--purple); }
+        .card.premium::before { content: 'BEST'; position: absolute; top: 16px; right: 16px; background: var(--purple); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.7em; font-weight: 700; letter-spacing: 1px; }
+        .card h3 { font-size: 1.3em; font-weight: 700; }
+        .card .price { font-size: 2.5em; font-weight: 800; margin: 12px 0; }
+        .card .price span { font-size: 0.4em; color: var(--sub); font-weight: 400; }
+        .card ul { list-style: none; margin: 16px 0; }
+        .card li { padding: 6px 0; color: var(--sub); font-size: 0.9em; }
+        .card li::before { content: '◆ '; color: var(--cyan); }
+        .btn { display: inline-block; padding: 14px 32px; border-radius: 12px; font-weight: 600; font-size: 0.95em; text-decoration: none; cursor: pointer; border: none; transition: all 0.3s; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .btn-primary { background: linear-gradient(135deg, var(--blue), var(--purple)); color: #fff; }
+        .btn-primary:hover { transform: scale(1.03); box-shadow: 0 10px 30px rgba(139,92,246,0.3); }
+        .btn-outline { border: 2px solid var(--blue); color: var(--blue); background: transparent; }
+        .btn-outline:hover { background: var(--blue); color: #fff; }
+        .steps { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+        .step { text-align: center; flex: 1; min-width: 120px; }
+        .step-num { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--blue), var(--purple)); display: inline-flex; align-items: center; justify-content: center; font-size: 1.5em; font-weight: 700; margin-bottom: 12px; }
+        .step p { color: var(--sub); font-size: 0.85em; }
+        .stats { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+        .stat { text-align: center; }
+        .stat .num { font-size: 2.5em; font-weight: 800; background: linear-gradient(135deg, var(--cyan), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat .label { color: var(--sub); font-size: 0.85em; margin-top: 4px; }
+        .chat-area { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; }
+        .chat-msg { padding: 10px 14px; border-radius: 12px; margin: 8px 0; font-size: 0.9em; line-height: 1.5; max-width: 85%; }
+        .chat-bot { background: rgba(59,130,246,0.1); color: var(--text); }
+        .chat-user { background: var(--blue); color: #fff; margin-left: auto; }
+        .chat-success { background: rgba(6,182,212,0.1); color: var(--cyan); text-align: center; white-space: pre-line; }
+        .input-row { display: flex; gap: 8px; margin-top: 12px; }
+        .input-row input { flex: 1; padding: 12px 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9em; }
+        .input-row input:focus { border-color: var(--blue); outline: none; }
+        .input-row button { padding: 12px 20px; background: var(--blue); color: #fff; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .payment-section { text-align: center; margin-top: 40px; }
+        .payment-section h2 { font-size: 1.5em; }
+        .payment-section .subtitle { margin: 8px auto 24px auto; }
+        .lang-switch { text-align: right; padding: 10px 0; }
+        .lang-switch button { background: none; border: 1px solid var(--border); color: var(--sub); padding: 6px 14px; border-radius: 8px; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.8em; margin-left: 6px; }
+        .lang-switch button.active { border-color: var(--blue); color: var(--blue); }
+        @media (max-width: 600px) { h1 { font-size: 2em; } h2 { font-size: 1.5em; } .glass { padding: 24px; } }
     </style>
 </head>
 <body>
-<div class="app" id="app"></div>
+<div class="container" id="app"></div>
 <script>
 const KEY = "vyjiuW1SxXDfKUlhAaCVt76G5PQkgzcJ";
 const WEBHOOK = "https://desktop-bsdpr8a.tail0f3da6.ts.net/webhook/nexlead";
-
 const LINKS = {
     standard: "https://nowpayments.io/payment/?iid=4745520915",
     premium: "https://nowpayments.io/payment/?iid=5357217903",
@@ -52,89 +81,107 @@ const LINKS = {
 };
 
 let lang = "fr", leadData = {};
-
 const T = {
     fr: {
-        menu_title:"Nexlead B2B",menu_sub:"Qualification de leads · International",
+        hero:"Qualification B2B\nIntelligente & Automatisée",
+        heroSub:"Votre assistant IA qui qualifie vos prospects en 2 minutes. Scoring, rapport, suivi. Pour les marchés USA, Dubaï et International.",
         why:"Pourquoi Nexlead ?",
-        why1:"100% Automatisé – IA en 2 min",why2:"Multilingue – 10+ langues",why3:"Scoring CHAUD/TIEDE/FROID",why4:"Rapport PDF (Premium)",why5:"Livraison 2h à 24h",
+        why1t:"100% Automatisé",why1d:"Notre IA qualifie vos leads sans effort.",
+        why2t:"Multilingue",why2d:"10+ langues : Anglais, Français, Arabe, Espagnol, etc.",
+        why3t:"Scoring Intelligent",why3d:"CHAUD / TIÈDE / FROID pour prioriser.",
         how:"Comment ça marche ?",
-        how1:"1. Choisissez votre offre",how2:"2. Décrivez votre prospect",how3:"3. Paiement sécurisé",how4:"4. Recevez votre rapport",
-        offers:"Nos offres",
+        step1:"Décrivez votre prospect",step2:"Notre IA le qualifie",step3:"Recevez le rapport",step4:"Prenez RDV",
+        results:"Nos résultats",
+        res1:"Satisfaction",res2:"Conversion RDV",res3:"Pays couverts",res4:"Temps moyen",
+        services:"Nos services",
         std:"Standard",stdP:"50 USD",std1:"Qualification complète",std2:"Scoring intelligent",std3:"Email + Calendly",std4:"Livraison 24h",
         prem:"Premium",premP:"100 USD",prem1:"Tout le pack Standard",prem2:"Rapport PDF détaillé",prem3:"Relance automatique",prem4:"Livraison 2h",
-        subs:"Abonnements",annual:"Annuel (-17%)",
+        subs:"Abonnements",
         start:"Starter",startP:"200 USD/mois",startL:"5 leads/mois",
         bus:"Business",busP:"500 USD/mois",busL:"15 leads/mois",
         ent:"Enterprise",entP:"1000 USD/mois",entL:"40 leads/mois",
-        pay:"Payer maintenant",
-        qual:"Décrivez votre prospect (nom, email, entreprise, pays, poste, besoins) :",
-        thanks:"✅ Merci ! Votre lead est qualifié.\n\nNous vous contactons sous 48h.\n📅 RDV : https://calendly.com/saiiah-ali328/30min",
-        error:"❌ Erreur. Réessayez.",
-        back:"← Retour"
+        annual:"Annuel (-17%)",
+        qual:"Prêt à qualifier un prospect ?",
+        qualSub:"Décrivez votre prospect en quelques mots :",
+        qualPlaceholder:"Ex: Omar, CEO de Riyadh Tech, om@riyadh.com, Arabie Saoudite, besoin IA...",
+        thanks:"✅ Qualification terminée !\n\nNous vous contactons sous 48h.\n📅 Prenez RDV : https://calendly.com/saiiah-ali328/30min",
+        error:"❌ Une erreur est survenue.",
+        payNow:"Payer",
+        payLater:"Ou qualifiez d'abord, payez après"
     },
     en: {
-        menu_title:"Nexlead B2B",menu_sub:"Lead Qualification · International",
+        hero:"Intelligent B2B\nLead Qualification",
+        heroSub:"Your AI assistant that qualifies prospects in 2 minutes. Scoring, report, follow-up. For USA, Dubai & International markets.",
         why:"Why Nexlead ?",
-        why1:"100% Automated – AI in 2 min",why2:"Multilingual – 10+ languages",why3:"HOT/WARM/COLD Scoring",why4:"PDF Report (Premium)",why5:"Delivery 2h to 24h",
+        why1t:"100% Automated",why1d:"Our AI qualifies your leads effortlessly.",
+        why2t:"Multilingual",why2d:"10+ languages: English, French, Arabic, Spanish, etc.",
+        why3t:"Smart Scoring",why3d:"HOT / WARM / COLD to prioritize.",
         how:"How it works ?",
-        how1:"1. Choose your offer",how2:"2. Describe your prospect",how3:"3. Secure payment",how4:"4. Receive your report",
-        offers:"Our offers",
+        step1:"Describe your prospect",step2:"Our AI qualifies them",step3:"Receive your report",step4:"Book a call",
+        results:"Our results",
+        res1:"Satisfaction",res2:"Meeting Rate",res3:"Countries",res4:"Avg Time",
+        services:"Our services",
         std:"Standard",stdP:"50 USD",std1:"Full qualification",std2:"Smart scoring",std3:"Email + Calendly",std4:"Delivery 24h",
         prem:"Premium",premP:"100 USD",prem1:"All Standard features",prem2:"Detailed PDF report",prem3:"Auto follow-up",prem4:"Delivery 2h",
-        subs:"Subscriptions",annual:"Annual (-17%)",
+        subs:"Subscriptions",
         start:"Starter",startP:"200 USD/mo",startL:"5 leads/mo",
         bus:"Business",busP:"500 USD/mo",busL:"15 leads/mo",
         ent:"Enterprise",entP:"1000 USD/mo",entL:"40 leads/mo",
-        pay:"Pay now",
-        qual:"Describe your prospect (name, email, company, country, job title, needs):",
-        thanks:"✅ Thank you! Your lead is qualified.\n\nWe'll contact you within 48h.\n📅 RDV: https://calendly.com/saiiah-ali328/30min",
-        error:"❌ Error. Try again.",
-        back:"← Back"
+        annual:"Annual (-17%)",
+        qual:"Ready to qualify a prospect ?",
+        qualSub:"Describe your prospect in a few words:",
+        qualPlaceholder:"Ex: Omar, CEO of Riyadh Tech, om@riyadh.com, Saudi Arabia, needs AI...",
+        thanks:"✅ Qualification complete!\n\nWe'll contact you within 48h.\n📅 Book a call: https://calendly.com/saiiah-ali328/30min",
+        error:"❌ An error occurred.",
+        payNow:"Pay",
+        payLater:"Or qualify first, pay later"
     }
 };
-
 let t = T.fr;
 
 function render(h) { document.getElementById("app").innerHTML = h; }
+function switchLang(l) { lang = l; t = T[l]; buildPage(); }
 
-function menu() {
-    let h = `<div class="lang-switch"><button onclick="switchLang('fr')">FR</button> <button onclick="switchLang('en')">EN</button></div>`;
-    h += `<div class="header"><div class="logo">◆</div><h1>${t.menu_title}</h1><p>${t.menu_sub}</p></div><div class="content">`;
-    h += `<div class="section">${t.why}</div>`;
-    [t.why1,t.why2,t.why3,t.why4,t.why5].forEach(i => h += `<div class="chat-msg chat-bot">✓ ${i}</div>`);
-    h += `<div class="section">${t.how}</div>`;
-    [t.how1,t.how2,t.how3,t.how4].forEach(i => h += `<div class="chat-msg chat-bot">${i}</div>`);
-    h += `<div class="section">${t.offers}</div>`;
-    h += offerCard(t.std,t.stdP,[t.std1,t.std2,t.std3,t.std4],LINKS.standard);
-    h += offerCard(t.prem,t.premP,[t.prem1,t.prem2,t.prem3,t.prem4],LINKS.premium);
-    h += `<div class="section">${t.subs}</div>`;
-    h += subCard(t.start,t.startP,t.startL,LINKS.starter_m,LINKS.starter_a);
-    h += subCard(t.bus,t.busP,t.busL,LINKS.business_m,LINKS.business_a);
-    h += subCard(t.ent,t.entP,t.entL,LINKS.enterprise_m,LINKS.enterprise_a);
-    h += `<button class="btn btn-blue" onclick="startQual()">💬 ${t.qual}</button>`;
-    h += `</div>`; render(h);
-}
-
-function offerCard(name,price,items,link) {
-    let h = `<div class="card"><h3>${name} <span class="price">${price}</span></h3><ul>`;
-    items.forEach(i => h += `<li>${i}</li>`);
-    h += `</ul><a href="${link}" target="_blank"><button class="btn btn-green">${t.pay}</button></a></div>`;
-    return h;
-}
-
-function subCard(name,price,leads,linkM,linkA) {
-    return `<div class="card"><h3>${name} <span class="price">${price}</span></h3><p style="font-size:0.8em;color:#64748b;">${leads} | ${t.annual}</p><a href="${linkM}" target="_blank"><button class="btn btn-green">${t.pay} (Mensuel)</button></a><a href="${linkA}" target="_blank"><button class="btn btn-green">${t.pay} (Annuel)</button></a></div>`;
-}
-
-function switchLang(l) { lang = l; t = T[l]; menu(); }
-
-function startQual() {
-    let h = `<div class="header"><div class="logo">◆</div><h1>${t.menu_title}</h1></div><div class="content">`;
-    h += `<div class="chat-msg chat-bot">${t.qual}</div>`;
-    h += `<div id="chatMsgs"></div>`;
-    h += `<div class="input-row"><input id="uin" placeholder="..."><button onclick="sendQual()">➤</button></div>`;
-    h += `<button class="btn btn-blue" onclick="menu()">${t.back}</button></div>`;
+function buildPage() {
+    let h = `<div class="lang-switch"><button class="${lang=='fr'?'active':''}" onclick="switchLang('fr')">FR</button><button class="${lang=='en'?'active':''}" onclick="switchLang('en')">EN</button></div>`;
+    
+    // HERO
+    h += `<section><h1>${t.hero.replace(/\n/g,'<br>')}</h1><p class="subtitle">${t.heroSub}</p><button class="btn btn-primary" onclick="document.getElementById('qualify').scrollIntoView({behavior:'smooth'})">${t.qual}</button></section>`;
+    
+    // WHY
+    h += `<section><h2>${t.why}</h2><div class="grid">`;
+    [{t:t.why1t,d:t.why1d,i:"🤖"},{t:t.why2t,d:t.why2d,i:"🌐"},{t:t.why3t,d:t.why3d,i:"📊"}].forEach(f => h += `<div class="feature"><div class="icon">${f.i}</div><h3>${f.t}</h3><p>${f.d}</p></div>`);
+    h += `</div></section>`;
+    
+    // HOW
+    h += `<section><h2>${t.how}</h2><div class="steps">`;
+    [t.step1,t.step2,t.step3,t.step4].forEach((s,i) => h += `<div class="step"><div class="step-num">${i+1}</div><p>${s}</p></div>`);
+    h += `</div></section>`;
+    
+    // RESULTS
+    h += `<section><h2>${t.results}</h2><div class="stats">`;
+    [{n:"100%",l:t.res1},{n:"80%",l:t.res2},{n:"10+",l:t.res3},{n:"90s",l:t.res4}].forEach(s => h += `<div class="stat"><div class="num">${s.n}</div><div class="label">${s.l}</div></div>`);
+    h += `</div></section>`;
+    
+    // SERVICES
+    h += `<section><h2>${t.services}</h2><div class="grid">`;
+    h += `<div class="card"><h3>${t.std}</h3><div class="price">${t.stdP}</div><ul><li>${t.std1}</li><li>${t.std2}</li><li>${t.std3}</li><li>${t.std4}</li></ul><a href="${LINKS.standard}" target="_blank" class="btn btn-outline">${t.payNow}</a></div>`;
+    h += `<div class="card premium"><h3>${t.prem}</h3><div class="price">${t.premP}</div><ul><li>${t.prem1}</li><li>${t.prem2}</li><li>${t.prem3}</li><li>${t.prem4}</li></ul><a href="${LINKS.premium}" target="_blank" class="btn btn-primary">${t.payNow}</a></div>`;
+    h += `</div></section>`;
+    
+    // SUBSCRIPTIONS
+    h += `<section><h2>${t.subs}</h2><div class="grid">`;
+    [{n:t.start,p:t.startP,l:t.startL,lm:LINKS.starter_m,la:LINKS.starter_a},{n:t.bus,p:t.busP,l:t.busL,lm:LINKS.business_m,la:LINKS.business_a},{n:t.ent,p:t.entP,l:t.entL,lm:LINKS.enterprise_m,la:LINKS.enterprise_a}].forEach(s => {
+        h += `<div class="card"><h3>${s.n}</h3><div class="price">${s.p}<span>/mois</span></div><p style="color:#94a3b8;font-size:0.85em;">${s.l} | ${t.annual}</p><a href="${s.lm}" target="_blank" class="btn btn-outline" style="margin:6px 0;">${t.payNow} (Mensuel)</a><a href="${s.la}" target="_blank" class="btn btn-outline">${t.payNow} (Annuel)</a></div>`;
+    });
+    h += `</div></section>`;
+    
+    // QUALIFY
+    h += `<section id="qualify"><div class="glass"><h2>${t.qual}</h2><p class="subtitle">${t.qualSub}</p><div class="chat-area"><div id="chatMsgs"></div><div class="input-row"><input id="uin" placeholder="${t.qualPlaceholder}"><button onclick="sendQual()">➤</button></div></div><p style="text-align:center;margin-top:12px;color:#94a3b8;font-size:0.8em;">${t.payLater}</p></div></section>`;
+    
+    // FOOTER
+    h += `<footer style="text-align:center;padding:40px 0;color:#475569;font-size:0.8em;">© 2026 Nexlead B2B · saiiah.ali328@gmail.com</footer>`;
+    
     render(h);
 }
 
@@ -142,24 +189,18 @@ function sendQual() {
     let v = document.getElementById("uin").value.trim();
     if(!v) return;
     let msgs = document.getElementById("chatMsgs");
-    msgs.innerHTML += `<div class="chat-msg chat-bot" style="text-align:right;background:#4f6ef6;color:white;">${v}</div>`;
+    msgs.innerHTML += `<div class="chat-msg chat-user">${v}</div>`;
     document.getElementById("uin").value = "";
-    
     let em = v.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-    let nm = v.match(/(?:I am|I'm|je suis|sono|soy|أنا|ich bin)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i);
-    leadData.email = em ? em[1] : "";
-    leadData.firstname = nm ? nm[1].split(" ")[0] : "";
-    leadData.lastname = nm && nm[1].split(" ")[1] ? nm[1].split(" ")[1] : "";
-    leadData.source = "Web Chatbot";
-    leadData.notes = v;
-
+    leadData.email = em ? em[1] : "non@fourni.com";
+    leadData.source = "Web Chatbot"; leadData.notes = v;
     fetch(WEBHOOK, {method:"POST",headers:{"Content-Type":"application/json","x-api-key":KEY},body:JSON.stringify({lead:leadData})})
     .then(r => { if(r.ok) msgs.innerHTML += `<div class="chat-msg chat-success">${t.thanks}</div>`; else msgs.innerHTML += `<div class="chat-msg chat-success">${t.error}</div>`; })
     .catch(() => msgs.innerHTML += `<div class="chat-msg chat-success">${t.error}</div>`);
     document.querySelector(".input-row").style.display = "none";
 }
 
-menu();
+buildPage();
 </script>
 </body>
 </html>

@@ -149,11 +149,11 @@ async function loadDashboard() {
     const contacts = data.map(c => {
       const p = c?.properties || {};
       const getVal = (key) => {
-        const v = p[key];
-        if (v && typeof v === 'object') return v.value || "";
-        return v || "";
-      };
-
+  const v = p[key];
+  if (v && typeof v === 'object') return String(v.value || "");
+  if (typeof v === 'string') return v;
+  return "";
+};
       let email = "";
       if (c?.["identity-profiles"]?.[0]?.identities) {
         const emailIdentity = c["identity-profiles"][0].identities.find(i => i.type === "EMAIL");

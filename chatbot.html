@@ -3,343 +3,203 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NexLead | Générez 200+ Leads Qualifiés/Mois</title>
+  <title>NexLead | Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --primary: #0A2463;
-      --secondary: #3E92CC;
-      --accent: #2ECC71;
-      --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-      --transition: all 0.3s ease;
-    }
-    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; color: #333; line-height: 1.6; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-    a { text-decoration: none; }
-
-    /* BARRE DE LANGUE */
-    .lang-switch {
-      position: fixed; top: 20px; right: 20px; z-index: 999; display: flex; gap: 8px;
-      background: rgba(255,255,255,0.95); padding: 8px 12px; border-radius: 30px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1); backdrop-filter: blur(10px);
-    }
-    .lang-switch button {
-      background: none; border: 2px solid #e2e8f0; color: #64748b; padding: 6px 14px;
-      border-radius: 20px; cursor: pointer; font-family: inherit; font-size: 0.85em; font-weight: 600; transition: var(--transition);
-    }
-    .lang-switch button:hover { border-color: var(--primary); color: var(--primary); }
-    .lang-switch button.active { background: var(--primary); border-color: var(--primary); color: white; }
-
-    /* EFFET 3D PROFESSIONNEL MODERNE */
-    h1 {
-      font-size: 3rem; margin-bottom: 20px; font-weight: 800; letter-spacing: 1px;
-      background: linear-gradient(to bottom, #ffffff 0%, #e2e8f0 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.4));
-    }
-    h2 {
-      font-size: 2.4rem; text-align: center; margin-bottom: 50px; font-weight: 800; color: var(--primary);
-      background: linear-gradient(to bottom, #0A2463 0%, #1e3a8a 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0px 3px 4px rgba(10, 36, 99, 0.3));
-      position: relative; display: inline-block; left: 50%; transform: translateX(-50%);
-    }
-    h3 { color: var(--primary); font-size: 1.4rem; font-weight: 700; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); transition: var(--transition); }
-    h3:hover { transform: translateY(-3px); text-shadow: 2px 4px 6px rgba(0,0,0,0.15); }
-    h4 { color: var(--accent); margin-bottom: 20px; font-size: 1.2rem; font-weight: 700; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
-
-    .hero { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 100px 0; text-align: center; }
-    .hero p { font-size: 1.3rem; margin-bottom: 30px; opacity: 0.95; font-weight: 500; }
-    
-    .cta-button { background: var(--accent); color: white; padding: 15px 35px; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; display: inline-block; transition: var(--transition); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .cta-button:hover { background: #27AE60; transform: translateY(-3px); box-shadow: 0 8px 15px rgba(46, 204, 113, 0.4); }
-
-    section { padding: 80px 0; }
-
-    .steps { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; }
-    .step { flex: 1; min-width: 280px; padding: 30px; background: #ffffff; border-radius: 12px; text-align: center; transition: var(--transition); box-shadow: var(--shadow); border: 1px solid #e2e8f0; }
-    .step:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-
-    .pricing { background: #f8fafc; }
-    .pricing-cards { display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; }
-    .card { flex: 1; min-width: 280px; max-width: 320px; padding: 40px 25px; background: white; border-radius: 16px; box-shadow: var(--shadow); text-align: center; transition: var(--transition); border: 1px solid #e2e8f0; }
-    .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-    .card.featured { border: 3px solid var(--accent); position: relative; }
-    .card.featured::before { content: "POPULAIRE"; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--accent); color: white; padding: 6px 18px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .card h3 { font-size: 1.6rem; margin-bottom: 10px; }
-    .card p.price { font-size: 2.5rem; font-weight: 800; color: var(--primary); margin-bottom: 10px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
-    .card p.sub-price { font-size: 0.9rem; color: #64748b; margin-bottom: 20px; }
-    .card ul { text-align: left; list-style: none; padding: 0; margin-bottom: 25px; }
-    .card li { margin: 12px 0; font-size: 0.95rem; color: #475569; }
-    .card li:before { content: "✅"; margin-right: 10px; }
-    .card .btn-group { display: flex; flex-direction: column; gap: 10px; }
-    .btn-outline { border: 2px solid var(--primary); color: var(--primary); background: transparent; padding: 12px; border-radius: 8px; font-weight: 600; transition: var(--transition); display: block; }
-    .btn-outline:hover { background: var(--primary); color: white; }
-
-    .testimonial { max-width: 800px; margin: 0 auto; padding: 40px; background: white; border-radius: 16px; box-shadow: var(--shadow); text-align: center; font-size: 1.3rem; line-height: 1.6; color: var(--primary); font-weight: 600; border: 1px solid #e2e8f0; }
-    
-    .faq-item { max-width: 800px; margin: 20px auto; padding: 25px; background: #ffffff; border-radius: 12px; border-left: 5px solid var(--accent); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .faq-item h3 { margin-top: 0; font-size: 1.2rem; }
-
-    .footer { background: var(--primary); color: white; padding: 60px 0 30px; }
-    .footer-links { display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 40px; gap: 30px; }
-    .footer-section { flex: 1; min-width: 200px; }
-    .footer-section ul { list-style: none; padding: 0; }
-    .footer-section li { margin: 10px 0; }
-    .footer-section a { color: #cbd5e1; transition: color 0.3s ease; font-weight: 500; }
-    .footer-section a:hover { color: var(--accent); text-decoration: underline; }
-    .footer-bottom { text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; color: #94a3b8; }
-
-    .qualify-section { background: #f1f5f9; }
-    .chat-area { background: white; border: 1px solid #cbd5e1; border-radius: 12px; padding: 24px; max-width: 700px; margin: 0 auto; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .chat-msg { padding: 12px 16px; border-radius: 12px; margin: 10px 0; font-size: 0.95em; line-height: 1.5; max-width: 90%; }
-    .chat-user { background: var(--primary); color: #fff; margin-left: auto; text-align: right; }
-    .chat-success { background: rgba(46, 204, 113, 0.1); color: #166534; text-align: center; border: 1px solid rgba(46, 204, 113, 0.3); }
-    .input-row { display: flex; gap: 10px; margin-top: 16px; }
-    .input-row input { flex: 1; padding: 14px 18px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1em; transition: var(--transition); }
-    .input-row input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(10, 36, 99, 0.1); }
-    .input-row button { padding: 14px 24px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.2em; transition: var(--transition); }
-    .input-row button:hover { background: #27AE60; transform: translateY(-2px); }
-
-    .chatbot-button { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: linear-gradient(135deg, var(--accent), #27AE60); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4); z-index: 1000; transition: var(--transition); border: 2px solid white; }
-    .chatbot-button:hover { transform: scale(1.1); }
-    .chatbot-container { position: fixed; bottom: 110px; right: 30px; width: 380px; height: 550px; background: white; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); display: none; z-index: 1000; overflow: hidden; flex-direction: column; border: 1px solid #e2e8f0; }
-    .chatbot-header { background: var(--primary); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
-    .chatbot-close { background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; line-height: 1; }
-    .chatbot-container iframe { flex: 1; width: 100%; border: none; }
-
-    @media (max-width: 768px) {
-      h1 { font-size: 2.2rem; } h2 { font-size: 1.8rem; }
-      .chatbot-container { width: 90%; right: 5%; bottom: 100px; height: 60vh; }
-      .lang-switch { top: 10px; right: 10px; padding: 6px 10px; }
-      .lang-switch button { padding: 5px 10px; font-size: 0.75em; }
-    }
+    :root { --bg: #f8fafc; --card: #fff; --blue: #0A2463; --purple: #3E92CC; --green: #2ECC71; --red: #ef4444; --orange: #f59e0b; --text: #1a202c; --sub: #64748b; --border: #e2e8f0; --shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    .locked { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, var(--blue), var(--purple)); color: white; }
+    .locked h1 { font-size: 2.5em; margin-bottom: 20px; }
+    .locked input { padding: 14px 20px; border-radius: 10px; border: none; font-size: 1em; font-family: 'Plus Jakarta Sans', sans-serif; width: 280px; }
+    .locked button { padding: 14px 28px; background: var(--green); color: #fff; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1em; margin-left: 8px; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+    .header h1 { font-size: 2em; font-weight: 700; color: var(--blue); }
+    .header .date { color: var(--sub); font-size: 0.9em; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
+    .stat-card { background: var(--card); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); transition: transform 0.3s; }
+    .stat-card:hover { transform: translateY(-4px); }
+    .stat-card .label { color: var(--sub); font-size: 0.85em; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+    .stat-card .value { font-size: 2.5em; font-weight: 800; }
+    .stat-card .sub { color: var(--sub); font-size: 0.8em; margin-top: 4px; }
+    .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+    .panel { background: var(--card); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .panel h2 { font-size: 1.2em; font-weight: 600; margin-bottom: 20px; color: var(--blue); }
+    .bar { height: 24px; border-radius: 12px; margin-bottom: 12px; background: #f1f5f9; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 12px; transition: width 0.5s ease; }
+    .bar-label { display: flex; justify-content: space-between; font-size: 0.85em; margin-bottom: 6px; color: var(--sub); }
+    .lead-table { width: 100%; border-collapse: collapse; }
+    .lead-table th { text-align: left; color: var(--sub); font-weight: 600; padding: 12px; border-bottom: 2px solid var(--border); font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; background: #f8fafc; }
+    .lead-table td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9em; }
+    .lead-table tr:hover { background: #f8fafc; }
+    .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 600; }
+    .badge-CHAUD { background: #fecaca; color: #991b1b; }
+    .badge-TIEDE { background: #fed7aa; color: #9a3412; }
+    .badge-FROID { background: #bfdbfe; color: #1e40af; }
+    .btn-refresh { background: var(--blue); color: #fff; border: none; padding: 10px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9em; transition: all 0.3s; }
+    .btn-refresh:hover { background: #1e3a8a; transform: translateY(-2px); }
+    .last-update { color: var(--sub); font-size: 0.85em; margin-top: 20px; text-align: right; }
+    .loading { text-align: center; padding: 40px; color: var(--sub); }
+    @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .chart-row { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-  <!-- BARRE DE LANGUE -->
-  <div class="lang-switch">
-    <button class="active" onclick="switchLang('fr')">FR</button>
-    <button onclick="switchLang('en')">EN</button>
-    <button onclick="switchLang('ar')">AR</button>
-    <button onclick="switchLang('es')">ES</button>
+<div class="locked" id="lockScreen">
+  <h1>🔒 NexLead Dashboard</h1>
+  <div>
+    <input type="password" id="passInput" placeholder="Mot de passe..." onkeypress="if(event.key==='Enter') unlock()">
+    <button onclick="unlock()">Accéder</button>
+  </div>
+</div>
+
+<div class="container" id="mainContent" style="display:none;">
+  <div class="header">
+    <div>
+      <h1>📊 NexLead Dashboard</h1>
+      <p class="date" id="currentDate"></p>
+    </div>
+    <button class="btn-refresh" onclick="loadDashboard()">↻ Actualiser</button>
   </div>
 
-  <section class="hero">
-    <div class="container">
-      <h1 data-fr="Générez 200+ Leads Qualifiés/Mois pour votre SaaS" data-en="Generate 200+ Qualified Leads/Month for Your SaaS" data-ar="ولّد أكثر من 200 عميل محتمل مؤهل شهريًا" data-es="Genere 200+ Leads Calificados/Mes para su SaaS">Générez 200+ Leads Qualifiés/Mois pour votre SaaS</h1>
-      <p data-fr="Nous aiderons votre entreprise à remplir son pipeline avec des prospects à haute intention grâce à l'IA." data-en="We will help your business fill its pipeline with high-intent prospects using AI." data-ar="سنساعد شركتك في ملء خط الأنابيب الخاص بها بآفاق عالية النية باستخدام الذكاء الاصطناعي." data-es="Ayudaremos a su empresa a llenar su pipeline con prospectos de alta intención gracias a la IA.">Nous aiderons votre entreprise à remplir son pipeline avec des prospects à haute intention grâce à l'IA.</p>
-      <a href="#qualify" class="cta-button" data-fr="Qualifier un prospect maintenant" data-en="Qualify a prospect now" data-ar="تأهيل عميل محتمل الآن" data-es="Calificar un prospecto ahora">Qualifier un prospect maintenant</a>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="label">Total Leads</div>
+      <div class="value" id="total" style="color:var(--blue);">-</div>
+      <div class="sub" id="todayLeads"></div>
     </div>
-  </section>
-
-  <section class="how-it-works">
-    <div class="container">
-      <h2 data-fr="Comment ça marchera" data-en="How It Will Work" data-ar="كيف سيعمل" data-es="Cómo Funcionará">Comment ça marchera</h2>
-      <div class="steps">
-        <div class="step"><h3 data-fr="🎯 Ciblage" data-en="🎯 Targeting" data-ar="🎯 استهداف" data-es="🎯 Segmentación">🎯 Ciblage</h3><p data-fr="Nous identifierons les décideurs via nos outils d'IA." data-en="We will identify decision-makers via our AI tools." data-ar="سنحدد صناع القرار عبر أدوات الذكاء الاصطناعي الخاصة بنا." data-es="Identificaremos a los tomadores de decisiones a través de nuestras herramientas de IA.">Nous identifierons les décideurs via nos outils d'IA.</p></div>
-        <div class="step"><h3 data-fr="✉️ Outreach" data-en="✉️ Outreach" data-ar="✉️ التواصل" data-es="✉️ Outreach">✉️ Outreach</h3><p data-fr="Nous rédigerons des emails et messages LinkedIn hyper-personnalisés." data-en="We will write hyper-personalized emails and LinkedIn messages." data-ar="سنكتب رسائل بريد إلكتروني ورسائل LinkedIn مخصصة للغاية." data-es="Redactaremos correos electrónicos y mensajes de LinkedIn hiperpersonalizados.">Nous rédigerons des emails et messages LinkedIn hyper-personnalisés.</p></div>
-        <div class="step"><h3 data-fr="📈 Conversion" data-en="📈 Conversion" data-ar="📈 تحويل" data-es="📈 Conversión">📈 Conversion</h3><p data-fr="La qualification sera automatique et les RDV iront directement dans votre agenda." data-en="Qualification will be automatic and appointments will go directly into your calendar." data-ar="سيكون التأهيل تلقائيًا وستذهب المواعيد مباشرة إلى جدولك." data-es="La calificación será automática y las citas irán directamente a su agenda.">La qualification sera automatique et les RDV iront directement dans votre agenda.</p></div>
-      </div>
+    <div class="stat-card">
+      <div class="label">Chauds 🔥</div>
+      <div class="value" id="hot" style="color:var(--red);">-</div>
+      <div class="sub">Priorité élevée</div>
     </div>
-  </section>
-
-  <!-- SECTION PRIX : 1. STANDARD & PREMIUM (Paiement unique) -->
-  <section class="pricing">
-    <div class="container">
-      <h2 data-fr="Nos Services à l'unité" data-en="Our One-Time Services" data-ar="خدماتنا لمرة واحدة" data-es="Nuestros Servicios Únicos">Nos Services à l'unité</h2>
-      <div class="pricing-cards">
-        <div class="card">
-          <h3 data-fr="Standard" data-en="Standard" data-ar="قياسي" data-es="Estándar">Standard</h3>
-          <p class="price">50 USD</p>
-          <ul>
-            <li data-fr="Qualification complète du lead" data-en="Complete lead qualification" data-ar="تأهيل كامل للعميل المحتمل" data-es="Calificación completa del lead">Qualification complète du lead</li>
-            <li data-fr="Scoring intelligent" data-en="Smart scoring" data-ar="تسجيل ذكي" data-es="Puntuación inteligente">Scoring intelligent</li>
-            <li data-fr="Envoi Email + Lien Calendly" data-en="Email sending + Calendly link" data-ar="إرسال بريد إلكتروني + رابط Calendly" data-es="Envío de correo + enlace Calendly">Envoi Email + Lien Calendly</li>
-          </ul>
-          <a href="https://nowpayments.io/payment/?iid=4745520915" target="_blank" rel="noopener noreferrer" class="cta-button" data-fr="Payer maintenant" data-en="Pay now" data-ar="ادفع الآن" data-es="Pagar ahora">Payer maintenant</a>
-        </div>
-        <div class="card featured">
-          <h3 data-fr="Premium" data-en="Premium" data-ar="مميز" data-es="Premium">Premium</h3>
-          <p class="price">100 USD</p>
-          <ul>
-            <li data-fr="Tout ce qui est inclus dans Standard" data-en="Everything included in Standard" data-ar="كل ما هو مشمول في القياسي" data-es="Todo lo incluido en Estándar">Tout ce qui est inclus dans Standard</li>
-            <li data-fr="Rapport PDF détaillé" data-en="Detailed PDF report" data-ar="تقرير PDF مفصل" data-es="Informe PDF detallado">Rapport PDF détaillé</li>
-            <li data-fr="Relance automatique (Follow-up)" data-en="Automatic follow-up" data-ar="متابعة تلقائية" data-es="Seguimiento automático">Relance automatique (Follow-up)</li>
-          </ul>
-          <a href="https://nowpayments.io/payment/?iid=5357217903" target="_blank" rel="noopener noreferrer" class="cta-button" data-fr="Payer maintenant" data-en="Pay now" data-ar="ادفع الآن" data-es="Pagar ahora">Payer maintenant</a>
-        </div>
-      </div>
+    <div class="stat-card">
+      <div class="label">Tièdes 🟡</div>
+      <div class="value" id="warm" style="color:var(--orange);">-</div>
+      <div class="sub">En cours</div>
     </div>
-  </section>
-
-  <!-- SECTION ABONNEMENTS : 2. LES 3 PLANS MENSUELS (CORRIGÉ) -->
-  <section class="pricing" style="background: white;">
-    <div class="container">
-      <h2 data-fr="Abonnements Mensuels" data-en="Monthly Subscriptions" data-ar="الاشتراكات الشهرية" data-es="Suscripciones Mensuales">Abonnements Mensuels</h2>
-      <div class="pricing-cards">
-        <!-- Starter -->
-        <div class="card">
-          <h3 data-fr="Starter" data-en="Starter" data-ar="مبتدئ" data-es="Starter">Starter</h3>
-          <p class="price">200 USD</p>
-          <p class="sub-price" data-fr="5 leads qualifiés / mois" data-en="5 qualified leads / month" data-ar="5 عملاء مؤهلين / شهر" data-es="5 leads calificados / mes">5 leads qualifiés / mois</p>
-          <div class="btn-group">
-            <a href="https://nowpayments.io/payment/?iid=4907380590" target="_blank" rel="noopener noreferrer" class="cta-button" data-fr="Mensuel" data-en="Monthly" data-ar="شهري" data-es="Mensual">Mensuel</a>
-            <a href="https://nowpayments.io/payment/?iid=4579176139" target="_blank" rel="noopener noreferrer" class="btn-outline" data-fr="Annuel (-17%)" data-en="Annual (-17%)" data-ar="سنوي (-17%)" data-es="Anual (-17%)">Annuel (-17%)</a>
-          </div>
-        </div>
-        <!-- Business -->
-        <div class="card featured">
-          <h3 data-fr="Business" data-en="Business" data-ar="أعمال" data-es="Business">Business</h3>
-          <p class="price">500 USD</p>
-          <p class="sub-price" data-fr="15 leads qualifiés / mois" data-en="15 qualified leads / month" data-ar="15 عميل مؤهل / شهر" data-es="15 leads calificados / mes">15 leads qualifiés / mois</p>
-          <div class="btn-group">
-            <a href="https://nowpayments.io/payment/?iid=6237506640" target="_blank" rel="noopener noreferrer" class="cta-button" data-fr="Mensuel" data-en="Monthly" data-ar="شهري" data-es="Mensual">Mensuel</a>
-            <a href="https://nowpayments.io/payment/?iid=5158335854" target="_blank" rel="noopener noreferrer" class="btn-outline" data-fr="Annuel (-17%)" data-en="Annual (-17%)" data-ar="سنوي (-17%)" data-es="Anual (-17%)">Annuel (-17%)</a>
-          </div>
-        </div>
-        <!-- Enterprise -->
-        <div class="card">
-          <h3 data-fr="Enterprise" data-en="Enterprise" data-ar="مؤسسات" data-es="Enterprise">Enterprise</h3>
-          <p class="price">1000 USD</p>
-          <p class="sub-price" data-fr="40 leads qualifiés / mois" data-en="40 qualified leads / month" data-ar="40 عميل مؤهل / شهر" data-es="40 leads calificados / mes">40 leads qualifiés / mois</p>
-          <div class="btn-group">
-            <a href="https://nowpayments.io/payment/?iid=5236180119" target="_blank" rel="noopener noreferrer" class="cta-button" data-fr="Mensuel" data-en="Monthly" data-ar="شهري" data-es="Mensual">Mensuel</a>
-            <a href="https://nowpayments.io/payment/?iid=4369256050" target="_blank" rel="noopener noreferrer" class="btn-outline" data-fr="Annuel (-17%)" data-en="Annual (-17%)" data-ar="سنوي (-17%)" data-es="Anual (-17%)">Annuel (-17%)</a>
-          </div>
-        </div>
-      </div>
+    <div class="stat-card">
+      <div class="label">Froids 🟢</div>
+      <div class="value" id="cold" style="color:var(--green);">-</div>
+      <div class="sub">Nurturing</div>
     </div>
-  </section>
-
-  <section class="testimonials">
-    <div class="container">
-      <h2 data-fr="Vos Résultats Futurs avec NexLead" data-en="Your Future Results with NexLead" data-ar="نتائجك المستقبلية مع NexLead" data-es="Sus Resultados Futuros con NexLead">Vos Résultats Futurs avec NexLead</h2>
-      <div class="testimonial">
-        <p data-fr="Vous <strong>générerez plus de 150 leads qualifiés</strong> en 30 jours. Votre taux de réponse <strong>dépassera les 20%</strong> et vos prises de rendez-vous <strong>augmenteront</strong> significativement grâce à notre automatisation." data-en="You <strong>will generate over 150 qualified leads</strong> in 30 days. Your response rate <strong>will exceed 20%</strong> and your appointments <strong>will increase</strong> significantly thanks to our automation." data-ar="<strong>ستولد أكثر من 150 عميل محتمل مؤهل</strong> في 30 يومًا. معدل استجابتك <strong>سيتجاوز 20%</strong> وستزداد مواعيدك بشكل كبير بفضل أتمتتنا." data-es="Usted <strong>generará más de 150 leads calificados</strong> en 30 días. Su tasa de respuesta <strong>superará el 20%</strong> y sus citas <strong>aumentarán</strong> significativamente gracias a nuestra automatización.">Vous <strong>générerez plus de 150 leads qualifiés</strong> en 30 jours. Votre taux de réponse <strong>dépassera les 20%</strong> et vos prises de rendez-vous <strong>augmenteront</strong> significativement grâce à notre automatisation.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="faq">
-    <div class="container">
-      <h2 data-fr="Questions Fréquentes" data-en="Frequently Asked Questions" data-ar="الأسئلة الشائعة" data-es="Preguntas Frecuentes">Questions Fréquentes</h2>
-      <div class="faq-item">
-        <h3 data-fr="Que se passera-t-il si je n'obtiens pas assez de leads ?" data-en="What will happen if I don't get enough leads?" data-ar="ماذا سيحدث إذا لم أحصل على ما يكفي من العملاء المحتملين؟" data-es="¿Qué pasará si no obtengo suficientes leads?">Que se passera-t-il si je n'obtiens pas assez de leads ?</h3>
-        <p data-fr="Nous offrirons une garantie de satisfaction. Si les résultats ne seront pas au rendez-vous après 30 jours, nous ajusterons la campagne." data-en="We will offer a satisfaction guarantee. If the results will not be there after 30 days, we will adjust the campaign." data-ar="سنقدم ضمان الرضا. إذا لم تكن النتائج موجودة بعد 30 يومًا، فسنقوم بتعديل الحملة." data-es="Ofreceremos una garantía de satisfacción. Si los resultados no estarán allí después de 30 días, ajustaremos la campaña.">Nous offrirons une garantie de satisfaction. Si les résultats ne seront pas au rendez-vous après 30 jours, nous ajusterons la campagne.</p>
-      </div>
-      <div class="faq-item">
-        <h3 data-fr="Pourrai-je annuler à tout moment ?" data-en="Will I be able to cancel at any time?" data-ar="هل سأتمكن من الإلغاء في أي وقت؟" data-es="¿Podré cancelar en cualquier momento?">Pourrai-je annuler à tout moment ?</h3>
-        <p data-fr="Oui ! Tous nos plans fonctionneront sans engagement et mois par mois." data-en="Yes! All our plans will work without commitment and month by month." data-ar="نعم! ستعمل جميع خططنا بدون التزام وشهر بشهر." data-es="¡Sí! Todos nuestros planes funcionarán sin compromiso y mes a mes.">Oui ! Tous nos plans fonctionneront sans engagement et mois par mois.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="qualify-section" id="qualify">
-    <div class="container">
-      <h2 data-fr="Qualifiez votre prospect maintenant" data-en="Qualify your prospect now" data-ar="قم بتأهيل عميلك المحتمل الآن" data-es="Califique su prospecto ahora">Qualifiez votre prospect maintenant</h2>
-      <p style="text-align:center; margin-bottom:30px; color:#64748b;" data-fr="Décrivez votre prospect, notre IA extraira les données et lancera le processus." data-en="Describe your prospect, our AI will extract the data and start the process." data-ar="صف عميلك المحتمل، سيقوم الذكاء الاصطناعي الخاص بنا باستخراج البيانات وبدء العملية." data-es="Describa su prospecto, nuestra IA extraerá los datos e iniciará el proceso.">Décrivez votre prospect, notre IA extraira les données et lancera le processus.</p>
-      <div class="chat-area">
-        <div id="chatMsgs"></div>
-        <div class="input-row">
-          <input id="uin" placeholder="Ex: Omar, CEO de Riyadh Tech, om@riyadh.com, Arabie Saoudite, cherche automatisation IA...">
-          <button onclick="sendQual()">➤</button>
-        </div>
-        <p style="text-align:center; margin-top:15px; color:#64748b; font-size:0.9em;">
-          <span data-fr="Ou qualifiez d'abord via" data-en="Or qualify first via" data-ar="أو قم بالتأهيل أولاً عبر" data-es="O califique primero a través de">Ou qualifiez d'abord via</span> <a href="https://t.me/The_ali_82_bot" target="_blank" rel="noopener noreferrer" style="color:var(--primary); font-weight:bold;">Telegram</a><span data-fr=", payez ensuite." data-en=", pay later." data-ar="، ادفع لاحقًا." data-es=", pague después.">, payez ensuite.</span>
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-links">
-        <div class="footer-section">
-          <h4>NexLead</h4>
-          <p data-fr="Automatisation de la prospection B2B et qualification de leads par IA." data-en="B2B prospecting automation and AI-powered lead qualification." data-ar="أتمتة آفاق B2B وتأهيل العملاء المحتملين بواسطة الذكاء الاصطناعي." data-es="Automatización de prospección B2B y calificación de leads por IA.">Automatisation de la prospection B2B et qualification de leads par IA.</p>
-        </div>
-        <div class="footer-section">
-          <h4 data-fr="Liens utiles" data-en="Useful links" data-ar="روابط مفيدة" data-es="Enlaces útiles">Liens utiles</h4>
-          <ul>
-            <li><a href="https://t.me/The_ali_82_bot" target="_blank" rel="noopener noreferrer"><span data-fr="Bot Telegram" data-en="Telegram Bot" data-ar="بوت تليجرام" data-es="Bot de Telegram">Bot Telegram</span></a></li>
-            <li><a href="https://calendly.com/saiiah-ali328/30min" target="_blank" rel="noopener noreferrer"><span data-fr="Prendre RDV" data-en="Book appointment" data-ar="حجز موعد" data-es="Reservar cita">Prendre RDV</span></a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h4 data-fr="Contact" data-en="Contact" data-ar="اتصل" data-es="Contacto">Contact</h4>
-          <p>Email: saiiah.ali328@gmail.com</p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 NexLead. Tous droits réservés.</p>
-      </div>
-    </div>
-  </footer>
-
-  <div class="chatbot-button" id="chatbot-button">💬</div>
-  <div class="chatbot-container" id="chatbot-container">
-    <div class="chatbot-header">
-      <span>Support NexLead</span>
-      <button class="chatbot-close" id="chatbot-close">×</button>
-    </div>
-    <iframe src="https://saiiah-ali-328-prog.github.io/nexlead/chatbot.html" title="Chatbot NexLead"></iframe>
   </div>
 
-  <script>
-    let currentLang = 'fr';
-    function switchLang(lang) {
-      currentLang = lang;
-      document.querySelectorAll('.lang-switch button').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
-      document.querySelectorAll('[data-' + lang + ']').forEach(el => { el.innerHTML = el.getAttribute('data-' + lang); });
-      document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
-    }
+  <div class="chart-row">
+    <div class="panel">
+      <h2>📈 Répartition des Leads</h2>
+      <div class="bar-label"><span>Chauds</span><span id="hotPct">0%</span></div>
+      <div class="bar"><div class="bar-fill" id="hotBar" style="width:0%;background:var(--red);"></div></div>
+      <div class="bar-label"><span>Tièdes</span><span id="warmPct">0%</span></div>
+      <div class="bar"><div class="bar-fill" id="warmBar" style="width:0%;background:var(--orange);"></div></div>
+      <div class="bar-label"><span>Froids</span><span id="coldPct">0%</span></div>
+      <div class="bar"><div class="bar-fill" id="coldBar" style="width:0%;background:var(--green);"></div></div>
+    </div>
+    <div class="panel">
+      <h2>🌍 Leads par Pays</h2>
+      <div id="countryStats"><div class="loading">Chargement...</div></div>
+    </div>
+  </div>
 
-    const WEBHOOK = "https://desktop-bsdpr8a.tail0f3da6.ts.net/webhook/nexlead";
-    let leadData = {};
+  <div class="panel">
+    <h2>📋 Derniers Leads Qualifiés</h2>
+    <table class="lead-table">
+      <thead>
+        <tr><th>Nom</th><th>Entreprise</th><th>Pays</th><th>Email</th><th>Score</th><th>Statut</th><th>Date</th></tr>
+      </thead>
+      <tbody id="leadsTable"><tr><td colspan="7" style="text-align:center;color:var(--sub);">Chargement...</td></tr></tbody>
+    </table>
+    <p class="last-update" id="lastUpdate"></p>
+  </div>
+</div>
 
-    function sendQual() {
-        let input = document.getElementById("uin");
-        let v = input.value.trim();
-        if(!v) return;
-        let msgs = document.getElementById("chatMsgs");
-        msgs.innerHTML += `<div class="chat-msg chat-user">${v}</div>`;
-        input.value = "";
-        let em = v.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-        leadData.email = em ? em[1] : "non@fourni.com";
-        leadData.source = "Web Chatbot Qualification"; 
-        leadData.notes = v;
-        leadData.timestamp = new Date().toISOString();
-        msgs.innerHTML += `<div class="chat-msg" style="background:#f1f5f9; color:#64748b;">Analyse en cours...</div>`;
-        fetch(WEBHOOK, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ lead: leadData })
-        })
-        .then(r => { 
-            msgs.lastElementChild.remove();
-            if(r.ok) {
-                msgs.innerHTML += `<div class="chat-msg chat-success">✅ Merci ! Lead qualifié avec succès.<br><br>Nous vous contacterons sous 48h.<br>📅 <a href="https://calendly.com/saiiah-ali328/30min" target="_blank" rel="noopener noreferrer" style="color:var(--accent); font-weight:bold;">Réservez votre appel ici</a></div>`;
-            } else {
-                msgs.innerHTML += `<div class="chat-msg chat-success">Lead reçu. Nous vous recontacterons bientôt.</div>`;
-            }
-        })
-        .catch(() => {
-            msgs.lastElementChild.remove();
-            msgs.innerHTML += `<div class="chat-msg chat-success">Lead enregistré. Notre équipe vous contactera.</div>`;
-        });
-        document.querySelector(".input-row").style.display = "none";
-    }
+<script>
+const PASSWORD = "nexlead2026";
+const DASHBOARD_URL = "https://desktop-bsdpr8a.tail0f3da6.ts.net/webhook/dashboard";
 
-    const chatbotBtn = document.getElementById('chatbot-button');
-    const chatbotContainer = document.getElementById('chatbot-container');
-    const chatbotClose = document.getElementById('chatbot-close');
-    chatbotBtn.addEventListener('click', () => { chatbotContainer.style.display = 'flex'; });
-    chatbotClose.addEventListener('click', () => { chatbotContainer.style.display = 'none'; });
-    document.addEventListener('click', (e) => {
-      if (!chatbotContainer.contains(e.target) && e.target !== chatbotBtn) { chatbotContainer.style.display = 'none'; }
+function unlock() {
+  if (document.getElementById("passInput").value === PASSWORD) {
+    document.getElementById("lockScreen").style.display = "none";
+    document.getElementById("mainContent").style.display = "block";
+    document.getElementById("currentDate").textContent = new Date().toLocaleDateString('fr-FR', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+    loadDashboard();
+  } else {
+    alert("Mot de passe incorrect");
+  }
+}
+
+async function loadDashboard() {
+  try {
+    const response = await fetch(DASHBOARD_URL);
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const rawData = await response.json();
+
+    let data = rawData;
+    if (Array.isArray(rawData)) data = rawData[0]?.json || rawData[0];
+    if (data?.results) data = data.results;
+
+    const contacts = (Array.isArray(data) ? data : [data]).map(c => {
+      const p = c?.properties || c || {};
+      let email = p.email || "";
+      if (!email && c?.["identity-profiles"]?.[0]?.identities) {
+        const emailIdentity = c["identity-profiles"][0].identities.find(i => i.type === "EMAIL");
+        email = emailIdentity ? emailIdentity.value : "";
+      }
+      const score = parseInt(p.hs_lead_score) || 50;
+      return {
+        firstname: p.firstname || "",
+        lastname: p.lastname || "",
+        email: email,
+        company: p.company || "",
+        country: p.country || "Non spécifié",
+        job_title: p.jobtitle || "",
+        score: score,
+        statut: score >= 70 ? "CHAUD" : (score >= 40 ? "TIEDE" : "FROID"),
+        date: (p.createdate || p.lastmodifieddate || "").slice(0, 10)
+      };
     });
-  </script>
+
+    updateDashboard(contacts);
+  } catch (e) {
+    document.getElementById("leadsTable").innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--red);">Erreur de connexion au dashboard</td></tr>';
+  }
+}
+
+function updateDashboard(contacts) {
+  const total = contacts.length;
+  const hot = contacts.filter(l => l.statut === "CHAUD").length;
+  const warm = contacts.filter(l => l.statut === "TIEDE").length;
+  const cold = contacts.filter(l => l.statut === "FROID").length;
+  const today = new Date().toISOString().split('T')[0];
+
+  document.getElementById("total").textContent = total;
+  document.getElementById("hot").textContent = hot;
+  document.getElementById("warm").textContent = warm;
+  document.getElementById("cold").textContent = cold;
+  document.getElementById("todayLeads").textContent = `+${contacts.filter(l => l.date === today).length} aujourd'hui`;
+
+  if (total > 0) {
+    document.getElementById("hotPct").textContent = Math.round(hot/total*100)+"%";
+    document.getElementById("warmPct").textContent = Math.round(warm/total*100)+"%";
+    document.getElementById("coldPct").textContent = Math.round(cold/total*100)+"%";
+    document.getElementById("hotBar").style.width = (hot/total*100)+"%";
+    document.getElementById("warmBar").style.width = (warm/total*100)+"%";
+    document.getElementById("coldBar").style.width = (cold/total*100)+"%";
+  }
+
+  const countries = {};
+  contacts.forEach(l => { countries[l.country || "Inconnu"] = (countries[l.country || "Inconnu"] || 0) + 1; });
+  document.getElementById("countryStats").innerHTML = Object.entries(countries).sort((a,b) => b[1]-a[1]).slice(0, 10).map(([c,n]) => 
+    `<div class="bar-label"><span>${c}</span><span>${n} leads</span></div><div class="bar"><div class="bar-fill" style="width:${total > 0 ? Math.round(n/total*100) : 0}%;background:var(--purple);"></div></div>`
+  ).join("");
+
+  document.getElementById("leadsTable").innerHTML = contacts.slice().reverse().map(l => 
+    `<tr><td><strong>${l.firstname} ${l.lastname}</strong></td><td>${l.company}</td><td>${l.country}</td><td>${l.email}</td><td>${l.score}/100</td><td><span class="badge badge-${l.statut}">${l.statut}</span></td><td>${l.date}</td></tr>`
+  ).join("");
+
+  document.getElementById("lastUpdate").textContent = `Dernière mise à jour : ${new Date().toLocaleTimeString('fr-FR')}`;
+}
+</script>
 </body>
 </html>

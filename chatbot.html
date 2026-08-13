@@ -136,27 +136,30 @@ async function loadDashboard() {
     const rawData = await response.json();
 
     let data = rawData;
-    if (Array.isArray(rawData)) data = rawData[0]?.json || rawData[0];
+    if (Array.isArray(rawData)) data = rawData[0]?.json || rawData;
     if (data?.results) data = data.results;
 
     const contacts = (Array.isArray(data) ? data : [data]).map(c => {
-      const p = c?.properties || c || {};
-      let email = p.email || "";
-      if (!email && c?.["identity-profiles"]?.[0]?.identities) {
+      const p = c?.properties || {};
+      const getVal = (key) => p[key]?.value || "";
+
+      let email = "";
+      if (c?.["identity-profiles"]?.[0]?.identities) {
         const emailIdentity = c["identity-profiles"][0].identities.find(i => i.type === "EMAIL");
         email = emailIdentity ? emailIdentity.value : "";
       }
-      const score = parseInt(p.hs_lead_score) || 50;
+
+      const score = 50;
       return {
-        firstname: p.firstname || "",
-        lastname: p.lastname || "",
+        firstname: getVal("firstname"),
+        lastname: getVal("lastname"),
         email: email,
-        company: p.company || "",
-        country: p.country || "Non spécifié",
-        job_title: p.jobtitle || "",
+        company: getVal("company"),
+        country: getVal("country") || "Non spécifié",
+        job_title: getVal("jobtitle"),
         score: score,
         statut: score >= 70 ? "CHAUD" : (score >= 40 ? "TIEDE" : "FROID"),
-        date: (p.createdate || p.lastmodifieddate || "").slice(0, 10)
+        date: getVal("createdate") || new Date().toISOString().slice(0, 10)
       };
     });
 

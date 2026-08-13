@@ -134,6 +134,9 @@ async function loadDashboard() {
     const response = await fetch(DASHBOARD_URL);
     if (!response.ok) throw new Error("HTTP " + response.status);
     const rawData = await response.json();
+    if (Array.isArray(rawData) && rawData[0]?.json) {
+  rawData = rawData[0].json;
+}
 
     let data = rawData;
     if (data && typeof data === 'object' && !Array.isArray(data)) {

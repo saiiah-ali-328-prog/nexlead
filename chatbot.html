@@ -135,19 +135,21 @@ async function loadDashboard() {
     if (!response.ok) throw new Error("HTTP " + response.status);
     const rawData = await response.json();
 
-   let data = rawData;
-if (data && typeof data === 'object' && !Array.isArray(data)) {
-  if (Array.isArray(data.json)) data = data.json;
-  else if (Array.isArray(data.data)) data = data.data;
-  else if (Array.isArray(data.leads)) data = data.leads;
-  else if (Array.isArray(data.results)) data = data.results;
-  else data = Object.values(data).find(v => Array.isArray(v)) || [data];
-}
-if (!Array.isArray(data)) data = [data];
+    let data = rawData;
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
+      if (Array.isArray(data.json)) data = data.json;
+      else if (Array.isArray(data.data)) data = data.data;
+      else data = Object.values(data).find(v => Array.isArray(v)) || [data];
+    }
+    if (!Array.isArray(data)) data = [data];
 
     const contacts = data.map(c => {
       const p = c?.properties || {};
-      const getVal = (key) => p[key]?.value || "";
+      const getVal = (key) => {
+        const v = p[key];
+        if (v && typeof v === 'object') return v.value || "";
+        return v || "";
+      };
 
       let email = "";
       if (c?.["identity-profiles"]?.[0]?.identities) {

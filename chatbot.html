@@ -136,10 +136,12 @@ async function loadDashboard() {
     const rawData = await response.json();
 
     let data = rawData;
-    if (Array.isArray(rawData)) data = rawData[0]?.json || rawData;
-    if (data?.results) data = data.results;
+    if (!Array.isArray(data)) {
+      data = data?.json || data?.data || data?.contacts || [data];
+    }
+    if (!Array.isArray(data)) data = [data];
 
-    const contacts = (Array.isArray(data) ? data : [data]).map(c => {
+    const contacts = data.map(c => {
       const p = c?.properties || {};
       const getVal = (key) => p[key]?.value || "";
 

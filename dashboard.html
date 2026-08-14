@@ -1,3 +1,6 @@
+Voici le code corrigé, remplace tout ton fichier :
+
+```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -41,7 +44,6 @@
     .btn-refresh:hover { background: #1e3a8a; transform: translateY(-2px); }
     .last-update { color: var(--sub); font-size: 0.85em; margin-top: 20px; text-align: right; }
     .loading { text-align: center; padding: 40px; color: var(--sub); }
-    .error { text-align: center; padding: 40px; color: var(--red); }
     @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .chart-row { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -119,6 +121,74 @@
 const PASSWORD = "nexlead2026";
 const DASHBOARD_URL = "https://desktop-bsdpr8a.tail0f3da6.ts.net/webhook/dashboard";
 
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function parseDate(dateStr) {
+  if (!dateStr) return new Date().toISOString().slice(0, 10);
+  if (typeof dateStr === 'number') {
+    return new Date(dateStr).toISOString().slice(0, 10);
+  }
+  const d = new Date(dateStr);
+  return isNaN(d.getTime()) ? new Date().toISOString().slice(0, 10) : d.toISOString().slice(0, 10);
+}
+
+// Fonction robuste qui retourne TOUJOURS une string, jamais un objet
+function getVal(obj, key) {
+  if (!obj || typeof obj !== 'object') return "";
+  
+  let val = null;
+  
+  // Cherche dans properties en priorité
+  if (obj.properties && typeof obj.properties === 'object') {
+    val = obj.properties[key];
+  }
+  
+  // Sinon cherche directement dans l'objet
+  if (val === null || val === undefined) {
+    val = obj[key];
+  }
+  
+  if (val === null || val === undefined) return "";
+  
+  // Cas 1 : c'est déjà une string ou un nombre
+  if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
+    return String(val);
+  }
+  
+  // Cas 2 : c'est un objet avec .value
+  if (typeof val === 'object') {
+    if (val.value !== null && val.value !== undefined) {
+      return String(val.value);
+    }
+    // Cas 3 : objet avec .values[]
+    if (Array.isArray(val.values) && val.values.length > 0) {
+      const first = val.values[0];
+      if (typeof first === 'object' && first.value !== undefined) {
+        return String(first.value);
+      }
+      return String(first);
+    }
+    // Cas 4 : objet avec d'autres clés, prend la première valeur string
+    const keys = Object.keys(val);
+    for (const k of keys) {
+      const v = val[k];
+      if (typeof v === 'string' || typeof v === 'number') {
+        return String(v);
+      }
+    }
+  }
+  
+  return "";
+}
+
 function unlock() {
   if (document.getElementById("passInput").value === PASSWORD) {
     document.getElementById("lockScreen").style.display = "none";
@@ -132,34 +202,69 @@ function unlock() {
 
 async function loadDashboard() {
   try {
+    document.getElementById("leadsTable").innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--sub);">Chargement...</td></tr>';
+    
     const response = await fetch(DASHBOARD_URL);
     if (!response.ok) throw new Error("HTTP " + response.status);
-    const rawData = await response.json();
+    
+    let rawData = await response.json();
+    
+    // Déballage format n8n
+    if (Array.isArray(rawData) && rawData[0]?.json) {
+      rawData = rawData[0].json;
+    }
 
-    // Le nœud HubSpot renvoie une structure imbriquée
+    // Recherche du tableau de contacts
     let data = rawData;
-    if (Array.isArray(rawData)) data = rawData[0]?.json || rawData;
-    if (data?.results) data = data.results;
+    let depth = 0;
+    while (depth < 10 && !Array.isArray(data) && typeof data === 'object' && data !== null) {
+      if (Array.isArray(data.json)) data = data.json;
+      else if (Array.isArray(data.data)) data = data.data;
+      else if (Array.isArray(data.contacts)) data = data.contacts;
+      else if (Array.isArray(data.results)) data = data.results;
+      else {
+        const vals = Object.values(data);
+        const arr = vals.find(v => Array.isArray(v));
+        if (arr) data = arr;
+        else if (vals.length > 0 && typeof vals[0] === 'object' && vals[0] !== null) data = vals[0];
+        else break;
+      }
+      depth++;
+    }
+    
+    if (!Array.isArray(data)) data = data ? [data] : [];
 
-    const contacts = (Array.isArray(data) ? data : [data]).map(c => {
-      const p = c?.properties || c || {};
-      const score = parseInt(p.hs_lead_score) || 50;
+    const contacts = data.map(c => {
+      let email = "";
+      if (c?.["identity-profiles"]?.[0]?.identities) {
+        const emailId = c["identity-profiles"][0].identities.find(i => i.type === "EMAIL");
+        email = emailId ? String(emailId.value) : "";
+      }
+      if (!email) email = getVal(c, "email");
+
+      let scoreRaw = getVal(c, "hubspotscore") || getVal(c, "hs_lead_score") || getVal(c, "score") || "50";
+      let score = parseInt(scoreRaw, 10);
+      if (isNaN(score) || score < 0 || score > 100) score = 50;
+
+      const statut = score >= 70 ? "CHAUD" : (score >= 40 ? "TIEDE" : "FROID");
+      
       return {
-        firstname: p.firstname || "",
-        lastname: p.lastname || "",
-        email: p.email || "",
-        company: p.company || "",
-        country: p.country || "",
-        job_title: p.jobtitle || "",
+        firstname: getVal(c, "firstname"),
+        lastname: getVal(c, "lastname"),
+        email: email,
+        company: getVal(c, "company"),
+        country: getVal(c, "country") || "Non spécifié",
+        job_title: getVal(c, "jobtitle"),
         score: score,
-        statut: score >= 70 ? "CHAUD" : (score >= 40 ? "TIEDE" : "FROID"),
-        date: (p.createdate || "").slice(0, 10)
+        statut: statut,
+        date: parseDate(getVal(c, "createdate") || getVal(c, "created_at"))
       };
     });
 
     updateDashboard(contacts);
   } catch (e) {
-    document.getElementById("leadsTable").innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--red);">Erreur de connexion au dashboard</td></tr>';
+    console.error("Erreur dashboard:", e);
+    document.getElementById("leadsTable").innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--red);">Erreur de connexion au dashboard</td></tr>`;
   }
 }
 
@@ -174,29 +279,53 @@ function updateDashboard(contacts) {
   document.getElementById("hot").textContent = hot;
   document.getElementById("warm").textContent = warm;
   document.getElementById("cold").textContent = cold;
-  document.getElementById("todayLeads").textContent = `+${contacts.filter(l => l.date === today).length} aujourd'hui`;
+  
+  const todayCount = contacts.filter(l => l.date === today).length;
+  document.getElementById("todayLeads").textContent = todayCount > 0 ? `+${todayCount} aujourd'hui` : "Aucun aujourd'hui";
 
   if (total > 0) {
-    document.getElementById("hotPct").textContent = Math.round(hot/total*100)+"%";
-    document.getElementById("warmPct").textContent = Math.round(warm/total*100)+"%";
-    document.getElementById("coldPct").textContent = Math.round(cold/total*100)+"%";
-    document.getElementById("hotBar").style.width = (hot/total*100)+"%";
-    document.getElementById("warmBar").style.width = (warm/total*100)+"%";
-    document.getElementById("coldBar").style.width = (cold/total*100)+"%";
+    const hotPct = Math.round(hot/total*100);
+    const warmPct = Math.round(warm/total*100);
+    const coldPct = Math.round(cold/total*100);
+    document.getElementById("hotPct").textContent = hotPct + "%";
+    document.getElementById("warmPct").textContent = warmPct + "%";
+    document.getElementById("coldPct").textContent = coldPct + "%";
+    document.getElementById("hotBar").style.width = hotPct + "%";
+    document.getElementById("warmBar").style.width = warmPct + "%";
+    document.getElementById("coldBar").style.width = coldPct + "%";
   }
 
   const countries = {};
-  contacts.forEach(l => { countries[l.country || "Inconnu"] = (countries[l.country || "Inconnu"] || 0) + 1; });
-  document.getElementById("countryStats").innerHTML = Object.entries(countries).sort((a,b) => b[1]-a[1]).slice(0, 10).map(([c,n]) => 
-    `<div class="bar-label"><span>${c}</span><span>${n} leads</span></div><div class="bar"><div class="bar-fill" style="width:${total > 0 ? Math.round(n/total*100) : 0}%;background:var(--purple);"></div></div>`
-  ).join("");
+  contacts.forEach(l => { 
+    const key = l.country || "Inconnu";
+    countries[key] = (countries[key] || 0) + 1; 
+  });
+  
+  document.getElementById("countryStats").innerHTML = Object.entries(countries)
+    .sort((a,b) => b[1]-a[1])
+    .slice(0, 10)
+    .map(([c, n]) => {
+      const pct = total > 0 ? Math.round(n/total*100) : 0;
+      return `<div class="bar-label"><span>${escapeHtml(c)}</span><span>${n} leads</span></div>
+              <div class="bar"><div class="bar-fill" style="width:${pct}%;background:var(--purple);"></div></div>`;
+    }).join("");
 
-  document.getElementById("leadsTable").innerHTML = contacts.slice().reverse().map(l => 
-    `<tr><td><strong>${l.firstname} ${l.lastname}</strong></td><td>${l.company}</td><td>${l.country}</td><td>${l.email}</td><td>${l.score}/100</td><td><span class="badge badge-${l.statut}">${l.statut}</span></td><td>${l.date}</td></tr>`
-  ).join("");
+  document.getElementById("leadsTable").innerHTML = contacts.slice().reverse().map(l => {
+    const name = escapeHtml(`${l.firstname} ${l.lastname}`).trim();
+    return `<tr>
+      <td><strong>${name}</strong></td>
+      <td>${escapeHtml(l.company)}</td>
+      <td>${escapeHtml(l.country)}</td>
+      <td>${escapeHtml(l.email)}</td>
+      <td>${l.score}/100</td>
+      <td><span class="badge badge-${l.statut}">${escapeHtml(l.statut)}</span></td>
+      <td>${escapeHtml(l.date)}</td>
+    </tr>`;
+  }).join("");
 
   document.getElementById("lastUpdate").textContent = `Dernière mise à jour : ${new Date().toLocaleTimeString('fr-FR')}`;
 }
 </script>
 </body>
 </html>
+```

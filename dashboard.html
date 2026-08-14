@@ -1,6 +1,3 @@
-Voici le code corrigé, remplace tout ton fichier :
-
-```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -123,70 +120,83 @@ const DASHBOARD_URL = "https://desktop-bsdpr8a.tail0f3da6.ts.net/webhook/dashboa
 
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 }
 
-function parseDate(dateStr) {
-  if (!dateStr) return new Date().toISOString().slice(0, 10);
-  if (typeof dateStr === 'number') {
-    return new Date(dateStr).toISOString().slice(0, 10);
+// Extrait une valeur depuis la structure HubSpot : { value: "xxx" }
+function getProp(contact, key) {
+  if (!contact || !contact.properties || !contact.properties[key]) return "";
+  const prop = contact.properties[key];
+  if (prop && typeof prop === 'object' && 'value' in prop) {
+    return String(prop.value);
   }
-  const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? new Date().toISOString().slice(0, 10) : d.toISOString().slice(0, 10);
+  return String(prop);
 }
 
-// Fonction robuste qui retourne TOUJOURS une string, jamais un objet
-function getVal(obj, key) {
-  if (!obj || typeof obj !== 'object') return "";
+// Extrait l'email depuis identity-profiles
+function getEmail(contact) {
+  try {
+    if (!contact || !contact["identity-profiles"] || !contact["identity-profiles"][0]) return "";
+    const identities = contact["identity-profiles"][0].identities || [];
+    const emailId = identities.find(i => i.type === "EMAIL");
+    return emailId ? String(emailId.value) : "";
+  } catch(e) { return ""; }
+}
+
+// Déduit le pays depuis le TLD de l'email
+function getCountryFromEmail(email) {
+  if (!email) return "Non spécifié";
+  const parts = email.split('@');
+  if (parts.length < 2) return "Non spécifié";
+  const domain = parts[1];
+  const tld = domain.split('.').pop().toLowerCase();
   
-  let val = null;
+  const map = {
+    'fr': 'France 🇫🇷', 'be': 'Belgique 🇧🇪', 'ch': 'Suisse 🇨🇭', 'ca': 'Canada 🇨🇦',
+    'dz': 'Algérie 🇩🇿', 'ma': 'Maroc 🇲🇦', 'tn': 'Tunisie 🇹🇳', 'ae': 'Émirats 🇦🇪',
+    'qa': 'Qatar 🇶🇦', 'sa': 'Arabie S. 🇸🇦', 'eg': 'Égypte 🇪🇬', 'us': 'USA 🇺🇸',
+    'co.uk': 'UK 🇬🇧', 'uk': 'UK 🇬🇧', 'de': 'Allemagne 🇩🇪', 'es': 'Espagne 🇪🇸', 
+    'it': 'Italie 🇮🇹', 'pt': 'Portugal 🇵🇹', 'nl': 'Pays-Bas 🇳🇱',
+    'jp': 'Japon 🇯🇵', 'cn': 'Chine 🇨🇳', 'in': 'Inde 🇮🇳', 'br': 'Brésil 🇧🇷'
+  };
   
-  // Cherche dans properties en priorité
-  if (obj.properties && typeof obj.properties === 'object') {
-    val = obj.properties[key];
+  if (map[tld]) return map[tld];
+  
+  // Vérifie si c'est un email pro (pas gmail, yahoo, etc.)
+  const freeProviders = ['gmail', 'yahoo', 'hotmail', 'outlook', 'aol', 'protonmail', 'icloud', 'live', 'msn'];
+  const domainName = domain.split('.')[0].toLowerCase();
+  if (freeProviders.includes(domainName)) return "International 🌍";
+  
+  return "International 🌍";
+}
+
+// Calcule un score basé sur la complétude du profil
+function calculateScore(contact) {
+  let score = 0;
+  if (getProp(contact, "firstname")) score += 15;
+  if (getProp(contact, "lastname")) score += 15;
+  if (getProp(contact, "company")) score += 30;
+  
+  const email = getEmail(contact);
+  if (email) {
+    score += 20;
+    // Bonus pour email pro
+    const freeProviders = ['gmail', 'yahoo', 'hotmail', 'outlook', 'aol', 'protonmail', 'icloud'];
+    const domain = email.split('@')[1]?.split('.')[0].toLowerCase();
+    if (!freeProviders.includes(domain)) score += 20;
   }
   
-  // Sinon cherche directement dans l'objet
-  if (val === null || val === undefined) {
-    val = obj[key];
-  }
-  
-  if (val === null || val === undefined) return "";
-  
-  // Cas 1 : c'est déjà une string ou un nombre
-  if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
-    return String(val);
-  }
-  
-  // Cas 2 : c'est un objet avec .value
-  if (typeof val === 'object') {
-    if (val.value !== null && val.value !== undefined) {
-      return String(val.value);
-    }
-    // Cas 3 : objet avec .values[]
-    if (Array.isArray(val.values) && val.values.length > 0) {
-      const first = val.values[0];
-      if (typeof first === 'object' && first.value !== undefined) {
-        return String(first.value);
-      }
-      return String(first);
-    }
-    // Cas 4 : objet avec d'autres clés, prend la première valeur string
-    const keys = Object.keys(val);
-    for (const k of keys) {
-      const v = val[k];
-      if (typeof v === 'string' || typeof v === 'number') {
-        return String(v);
-      }
-    }
-  }
-  
-  return "";
+  return Math.min(score, 100);
+}
+
+// Convertit un timestamp HubSpot (ms) en date lisible
+function formatDate(timestamp) {
+  if (!timestamp) return new Date().toISOString().slice(0, 10);
+  const ts = typeof timestamp === 'string' ? parseInt(timestamp, 10) : timestamp;
+  if (isNaN(ts)) return new Date().toISOString().slice(0, 10);
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return new Date().toISOString().slice(0, 10);
+  return d.toISOString().slice(0, 10);
 }
 
 function unlock() {
@@ -209,62 +219,36 @@ async function loadDashboard() {
     
     let rawData = await response.json();
     
-    // Déballage format n8n
-    if (Array.isArray(rawData) && rawData[0]?.json) {
-      rawData = rawData[0].json;
-    }
-
-    // Recherche du tableau de contacts
+    // Déballage si nécessaire
     let data = rawData;
-    let depth = 0;
-    while (depth < 10 && !Array.isArray(data) && typeof data === 'object' && data !== null) {
-      if (Array.isArray(data.json)) data = data.json;
-      else if (Array.isArray(data.data)) data = data.data;
-      else if (Array.isArray(data.contacts)) data = data.contacts;
-      else if (Array.isArray(data.results)) data = data.results;
-      else {
-        const vals = Object.values(data);
-        const arr = vals.find(v => Array.isArray(v));
-        if (arr) data = arr;
-        else if (vals.length > 0 && typeof vals[0] === 'object' && vals[0] !== null) data = vals[0];
-        else break;
-      }
-      depth++;
+    if (Array.isArray(rawData) && rawData[0]?.json) {
+      data = rawData[0].json;
     }
     
-    if (!Array.isArray(data)) data = data ? [data] : [];
+    // S'assure que c'est un tableau
+    if (!Array.isArray(data)) data = [data];
 
     const contacts = data.map(c => {
-      let email = "";
-      if (c?.["identity-profiles"]?.[0]?.identities) {
-        const emailId = c["identity-profiles"][0].identities.find(i => i.type === "EMAIL");
-        email = emailId ? String(emailId.value) : "";
-      }
-      if (!email) email = getVal(c, "email");
-
-      let scoreRaw = getVal(c, "hubspotscore") || getVal(c, "hs_lead_score") || getVal(c, "score") || "50";
-      let score = parseInt(scoreRaw, 10);
-      if (isNaN(score) || score < 0 || score > 100) score = 50;
-
+      const email = getEmail(c);
+      const score = calculateScore(c);
       const statut = score >= 70 ? "CHAUD" : (score >= 40 ? "TIEDE" : "FROID");
       
       return {
-        firstname: getVal(c, "firstname"),
-        lastname: getVal(c, "lastname"),
+        firstname: getProp(c, "firstname") || "Sans prénom",
+        lastname: getProp(c, "lastname") || "Sans nom",
         email: email,
-        company: getVal(c, "company"),
-        country: getVal(c, "country") || "Non spécifié",
-        job_title: getVal(c, "jobtitle"),
+        company: getProp(c, "company") || "-",
+        country: getCountryFromEmail(email),
         score: score,
         statut: statut,
-        date: parseDate(getVal(c, "createdate") || getVal(c, "created_at"))
+        date: formatDate(c.addedAt || getProp(c, "createdate"))
       };
     });
 
     updateDashboard(contacts);
   } catch (e) {
-    console.error("Erreur dashboard:", e);
-    document.getElementById("leadsTable").innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--red);">Erreur de connexion au dashboard</td></tr>`;
+    console.error("Erreur:", e);
+    document.getElementById("leadsTable").innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--red);">Erreur : ' + escapeHtml(e.message) + '</td></tr>';
   }
 }
 
@@ -281,7 +265,7 @@ function updateDashboard(contacts) {
   document.getElementById("cold").textContent = cold;
   
   const todayCount = contacts.filter(l => l.date === today).length;
-  document.getElementById("todayLeads").textContent = todayCount > 0 ? `+${todayCount} aujourd'hui` : "Aucun aujourd'hui";
+  document.getElementById("todayLeads").textContent = todayCount > 0 ? "+" + todayCount + " aujourd'hui" : "Aucun aujourd'hui";
 
   if (total > 0) {
     const hotPct = Math.round(hot/total*100);
@@ -302,30 +286,16 @@ function updateDashboard(contacts) {
   });
   
   document.getElementById("countryStats").innerHTML = Object.entries(countries)
-    .sort((a,b) => b[1]-a[1])
-    .slice(0, 10)
-    .map(([c, n]) => {
-      const pct = total > 0 ? Math.round(n/total*100) : 0;
-      return `<div class="bar-label"><span>${escapeHtml(c)}</span><span>${n} leads</span></div>
-              <div class="bar"><div class="bar-fill" style="width:${pct}%;background:var(--purple);"></div></div>`;
-    }).join("");
+    .sort((a,b) => b[1]-a[1]).slice(0, 10)
+    .map(([c, n]) => '<div class="bar-label"><span>' + escapeHtml(c) + '</span><span>' + n + ' leads</span></div><div class="bar"><div class="bar-fill" style="width:' + (total > 0 ? Math.round(n/total*100) : 0) + '%;background:var(--purple);"></div></div>').join("");
 
   document.getElementById("leadsTable").innerHTML = contacts.slice().reverse().map(l => {
-    const name = escapeHtml(`${l.firstname} ${l.lastname}`).trim();
-    return `<tr>
-      <td><strong>${name}</strong></td>
-      <td>${escapeHtml(l.company)}</td>
-      <td>${escapeHtml(l.country)}</td>
-      <td>${escapeHtml(l.email)}</td>
-      <td>${l.score}/100</td>
-      <td><span class="badge badge-${l.statut}">${escapeHtml(l.statut)}</span></td>
-      <td>${escapeHtml(l.date)}</td>
-    </tr>`;
+    const name = escapeHtml(l.firstname) + ' ' + escapeHtml(l.lastname);
+    return '<tr><td><strong>' + name + '</strong></td><td>' + escapeHtml(l.company) + '</td><td>' + escapeHtml(l.country) + '</td><td>' + escapeHtml(l.email) + '</td><td>' + l.score + '/100</td><td><span class="badge badge-' + l.statut + '">' + escapeHtml(l.statut) + '</span></td><td>' + escapeHtml(l.date) + '</td></tr>';
   }).join("");
 
-  document.getElementById("lastUpdate").textContent = `Dernière mise à jour : ${new Date().toLocaleTimeString('fr-FR')}`;
+  document.getElementById("lastUpdate").textContent = "Dernière mise à jour : " + new Date().toLocaleTimeString('fr-FR');
 }
 </script>
 </body>
 </html>
-```

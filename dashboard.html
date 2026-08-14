@@ -6,59 +6,97 @@
   <title>NexLead | Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root { --bg: #f8fafc; --card: #fff; --blue: #0A2463; --purple: #3E92CC; --green: #2ECC71; --red: #ef4444; --orange: #f59e0b; --text: #1a202c; --sub: #64748b; --border: #e2e8f0; --shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    :root { --bg: #f8fafc; --card: #fff; --blue: #0A2463; --purple: #3E92CC; --green: #2ECC71; --red: #ef4444; --orange: #f59e0b; --text: #1a202c; --sub: #64748b; --border: #e2e8f0; --hover: #f8fafc; --bar-bg: #f1f5f9; --th-bg: #f8fafc; --shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    body.dark { --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --sub: #94a3b8; --border: #334155; --hover: #263449; --bar-bg: #334155; --th-bg: #263449; --shadow: 0 4px 15px rgba(0,0,0,0.4); }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.3s, color 0.3s; }
     .locked { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, var(--blue), var(--purple)); color: white; }
     .locked h1 { font-size: 2.5em; margin-bottom: 20px; }
     .locked input { padding: 14px 20px; border-radius: 10px; border: none; font-size: 1em; font-family: 'Plus Jakarta Sans', sans-serif; width: 280px; }
     .locked button { padding: 14px 28px; background: var(--green); color: #fff; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1em; margin-left: 8px; }
+    .remember { margin-top: 15px; font-size: 0.85em; display: flex; align-items: center; gap: 8px; cursor: pointer; }
     .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
     .header h1 { font-size: 2em; font-weight: 700; color: var(--blue); }
+    body.dark .header h1 { color: #7db4e8; }
     .header .date { color: var(--sub); font-size: 0.9em; }
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 20px; }
     .stat-card { background: var(--card); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); transition: transform 0.3s; cursor: pointer; }
     .stat-card:hover { transform: translateY(-4px); }
     .stat-card.active { border-color: var(--blue); border-width: 2px; }
+    body.dark .stat-card.active { border-color: var(--purple); }
     .stat-card .label { color: var(--sub); font-size: 0.85em; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
     .stat-card .value { font-size: 2.5em; font-weight: 800; }
     .stat-card .sub { color: var(--sub); font-size: 0.8em; margin-top: 4px; }
-    .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+    .kpi-card { background: var(--card); border-radius: 12px; padding: 15px 20px; box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .kpi-card .k-label { color: var(--sub); font-size: 0.8em; font-weight: 600; }
+    .kpi-card .k-value { font-size: 1.2em; font-weight: 800; color: var(--purple); }
+    .chart-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 30px; }
     .panel { background: var(--card); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
-    .panel h2 { font-size: 1.2em; font-weight: 600; margin-bottom: 20px; color: var(--blue); }
-    .bar { height: 24px; border-radius: 12px; margin-bottom: 12px; background: #f1f5f9; overflow: hidden; }
+    .panel h2 { font-size: 1.1em; font-weight: 600; margin-bottom: 20px; color: var(--blue); }
+    body.dark .panel h2 { color: #7db4e8; }
+    .bar { height: 24px; border-radius: 12px; margin-bottom: 12px; background: var(--bar-bg); overflow: hidden; }
     .bar-fill { height: 100%; border-radius: 12px; transition: width 0.5s ease; }
     .bar-label { display: flex; justify-content: space-between; font-size: 0.85em; margin-bottom: 6px; color: var(--sub); }
+    .trend { display: flex; align-items: flex-end; gap: 5px; height: 140px; }
+    .trend-bar { flex: 1; background: var(--purple); border-radius: 5px 5px 0 0; min-height: 3px; cursor: pointer; transition: background 0.2s; }
+    .trend-bar:hover { background: var(--green); }
+    .trend-labels { display: flex; gap: 5px; margin-top: 6px; }
+    .trend-labels span { flex: 1; text-align: center; font-size: 0.6em; color: var(--sub); }
+    .dupe-banner { background: #fef3c7; border: 1px solid var(--orange); color: #92400e; border-radius: 12px; padding: 12px 20px; margin-bottom: 20px; font-size: 0.9em; display: none; }
+    body.dark .dupe-banner { background: #453010; color: #fcd34d; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .search-box { padding: 10px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.9em; font-family: 'Plus Jakarta Sans', sans-serif; width: 260px; background: var(--card); color: var(--text); }
+    .search-box:focus { outline: none; border-color: var(--purple); }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-btn { padding: 8px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.82em; font-weight: 600; transition: all 0.3s; color: var(--sub); }
+    .filter-btn:hover { background: var(--bar-bg); }
+    .filter-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+    body.dark .filter-btn.active { background: var(--purple); border-color: var(--purple); }
     .lead-table { width: 100%; border-collapse: collapse; }
-    .lead-table th { text-align: left; color: var(--sub); font-weight: 600; padding: 12px; border-bottom: 2px solid var(--border); font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; background: #f8fafc; }
+    .lead-table th { text-align: left; color: var(--sub); font-weight: 600; padding: 12px; border-bottom: 2px solid var(--border); font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; background: var(--th-bg); cursor: pointer; user-select: none; }
     .lead-table td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9em; }
-    .lead-table tr:hover { background: #f8fafc; }
+    .lead-table tbody tr { cursor: pointer; }
+    .lead-table tr:hover { background: var(--hover); }
     .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 600; }
     .badge-CHAUD { background: #fecaca; color: #991b1b; }
     .badge-TIEDE { background: #fed7aa; color: #9a3412; }
     .badge-FROID { background: #bfdbfe; color: #1e40af; }
-    .btn { border: none; padding: 10px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9em; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn { border: none; padding: 10px 16px; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.85em; transition: all 0.3s; display: inline-flex; align-items: center; gap: 6px; }
     .btn-refresh { background: var(--blue); color: #fff; }
-    .btn-refresh:hover { background: #1e3a8a; transform: translateY(-2px); }
+    .btn-refresh:hover { transform: translateY(-2px); }
     .btn-export { background: var(--green); color: #fff; }
-    .btn-export:hover { background: #27ae60; transform: translateY(-2px); }
+    .btn-export:hover { transform: translateY(-2px); }
+    .btn-neutral { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+    .btn-neutral.on { background: var(--purple); color: #fff; border-color: var(--purple); }
     .last-update { color: var(--sub); font-size: 0.85em; margin-top: 20px; text-align: right; }
     .loading { text-align: center; padding: 40px; color: var(--sub); }
-    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
-    .search-box { padding: 10px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.9em; font-family: 'Plus Jakarta Sans', sans-serif; width: 280px; transition: border 0.3s; }
-    .search-box:focus { outline: none; border-color: var(--blue); }
-    .filters { display: flex; gap: 8px; }
-    .filter-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.85em; font-weight: 600; transition: all 0.3s; color: var(--sub); }
-    .filter-btn:hover { background: #f1f5f9; }
-    .filter-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
-    .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px; }
-    .page-btn { padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9em; transition: all 0.3s; }
-    .page-btn:hover:not(:disabled) { background: #f1f5f9; }
+    .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+    .page-btn { padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9em; }
     .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .page-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .page-btn.active { background: var(--blue); color: #fff; }
     .page-info { color: var(--sub); font-size: 0.9em; }
-    @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .chart-row { grid-template-columns: 1fr; } .search-box { width: 100%; } }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--card); border-radius: 16px; padding: 30px; width: 92%; max-width: 540px; box-shadow: 0 20px 60px rgba(0,0,0,0.35); position: relative; max-height: 85vh; overflow-y: auto; }
+    .modal-close { position: absolute; top: 15px; right: 18px; background: none; border: none; font-size: 1.4em; cursor: pointer; color: var(--sub); }
+    .modal h3 { font-size: 1.4em; margin-bottom: 5px; color: var(--blue); }
+    body.dark .modal h3 { color: #7db4e8; }
+    .modal .m-sub { color: var(--sub); font-size: 0.9em; margin-bottom: 20px; }
+    .m-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9em; }
+    .m-row .m-label { color: var(--sub); font-weight: 600; }
+    .m-actions { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+    .m-actions .btn { flex: 1; justify-content: center; }
+    .btn-mail { background: var(--blue); color: #fff; text-decoration: none; }
+    .btn-tg { background: #229ED9; color: #fff; text-decoration: none; }
+    .btn-copy { background: var(--orange); color: #fff; }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: var(--blue); color: #fff; padding: 14px 22px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); opacity: 0; transform: translateY(20px); transition: all 0.4s; z-index: 2000; pointer-events: none; font-size: 0.9em; max-width: 340px; }
+    body.dark .toast { background: var(--purple); }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    @media (max-width: 1100px) { .chart-row { grid-template-columns: 1fr; } .kpi-row { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .search-box { width: 100%; } }
   </style>
 </head>
 <body>
@@ -69,6 +107,7 @@
     <input type="password" id="passInput" placeholder="Mot de passe..." onkeypress="if(event.key==='Enter') unlock()">
     <button onclick="unlock()">Accéder</button>
   </div>
+  <label class="remember"><input type="checkbox" id="rememberMe"> Se souvenir de moi</label>
 </div>
 
 <div class="container" id="mainContent" style="display:none;">
@@ -77,9 +116,12 @@
       <h1>📊 NexLead Dashboard</h1>
       <p class="date" id="currentDate"></p>
     </div>
-    <div style="display:flex;gap:10px;">
-      <button class="btn btn-export" onclick="exportCSV()">📥 Export CSV</button>
-      <button class="btn btn-refresh" onclick="loadDashboard()">↻ Actualiser</button>
+    <div class="header-actions">
+      <button class="btn btn-neutral" id="btnDark" onclick="toggleDark()">🌙</button>
+      <button class="btn btn-neutral on" id="btnAuto" onclick="toggleAuto()">⏱ Auto: ON</button>
+      <button class="btn btn-neutral" onclick="weeklyReport()">📊 Rapport</button>
+      <button class="btn btn-export" onclick="exportCSV()">📥 CSV</button>
+      <button class="btn btn-refresh" onclick="loadDashboard(false)">↻ Actualiser</button>
     </div>
   </div>
 
@@ -106,9 +148,16 @@
     </div>
   </div>
 
+  <div class="kpi-row">
+    <div class="kpi-card"><span class="k-label">📊 Score moyen</span><span class="k-value" id="kpiAvg">-</span></div>
+    <div class="kpi-card"><span class="k-label">💼 Emails pro</span><span class="k-value" id="kpiPro">-</span></div>
+    <div class="kpi-card"><span class="k-label">🏆 Meilleur pays</span><span class="k-value" id="kpiCountry">-</span></div>
+    <div class="kpi-card"><span class="k-label">⚠️ Doublons</span><span class="k-value" id="kpiDupes">-</span></div>
+  </div>
+
   <div class="chart-row">
     <div class="panel">
-      <h2>📈 Répartition des Leads</h2>
+      <h2>📈 Répartition</h2>
       <div class="bar-label"><span>Chauds</span><span id="hotPct">0%</span></div>
       <div class="bar"><div class="bar-fill" id="hotBar" style="width:0%;background:var(--red);"></div></div>
       <div class="bar-label"><span>Tièdes</span><span id="warmPct">0%</span></div>
@@ -117,25 +166,45 @@
       <div class="bar"><div class="bar-fill" id="coldBar" style="width:0%;background:var(--green);"></div></div>
     </div>
     <div class="panel">
+      <h2>📅 Nouveaux leads (14 jours)</h2>
+      <div class="trend" id="trendChart"></div>
+      <div class="trend-labels" id="trendLabels"></div>
+    </div>
+    <div class="panel">
       <h2>🌍 Leads par Pays</h2>
       <div id="countryStats"><div class="loading">Chargement...</div></div>
     </div>
   </div>
 
+  <div class="dupe-banner" id="dupeBanner"></div>
+
   <div class="panel">
-    <h2>📋 Derniers Leads Qualifiés</h2>
+    <h2>📋 Leads Qualifiés <span style="font-weight:400;font-size:0.8em;color:var(--sub);">(clique sur un lead pour détails)</span></h2>
     <div class="toolbar">
-      <input type="text" class="search-box" id="searchBox" placeholder="🔍 Rechercher un lead (nom, email, entreprise)..." oninput="handleSearch()">
+      <input type="text" class="search-box" id="searchBox" placeholder="🔍 Rechercher..." oninput="handleSearch()">
+      <div class="filters">
+        <button class="filter-btn" data-period="today" onclick="setPeriod('today')">Aujourd'hui</button>
+        <button class="filter-btn" data-period="7" onclick="setPeriod('7')">7 jours</button>
+        <button class="filter-btn" data-period="30" onclick="setPeriod('30')">30 jours</button>
+        <button class="filter-btn active" data-period="all" onclick="setPeriod('all')">Tout</button>
+      </div>
       <div class="filters">
         <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">Tous</button>
-        <button class="filter-btn" data-filter="CHAUD" onclick="setFilter('CHAUD')">🔥 Chauds</button>
-        <button class="filter-btn" data-filter="TIEDE" onclick="setFilter('TIEDE')">🟡 Tièdes</button>
-        <button class="filter-btn" data-filter="FROID" onclick="setFilter('FROID')">🟢 Froids</button>
+        <button class="filter-btn" data-filter="CHAUD" onclick="setFilter('CHAUD')">🔥</button>
+        <button class="filter-btn" data-filter="TIEDE" onclick="setFilter('TIEDE')">🟡</button>
+        <button class="filter-btn" data-filter="FROID" onclick="setFilter('FROID')">🟢</button>
       </div>
     </div>
     <table class="lead-table">
       <thead>
-        <tr><th>Nom</th><th>Entreprise</th><th>Pays</th><th>Email</th><th>Score</th><th>Statut</th><th>Date</th></tr>
+        <tr>
+          <th onclick="setSort('name')" id="th-name">Nom <span class="sort-arrow">↕</span></th>
+          <th onclick="setSort('company')" id="th-company">Entreprise <span class="sort-arrow">↕</span></th>
+          <th>Pays</th><th>Email</th>
+          <th onclick="setSort('score')" id="th-score">Score <span class="sort-arrow">↕</span></th>
+          <th>Statut</th>
+          <th onclick="setSort('date')" id="th-date">Date <span class="sort-arrow">↕</span></th>
+        </tr>
       </thead>
       <tbody id="leadsTable"><tr><td colspan="7" style="text-align:center;color:var(--sub);">Chargement...</td></tr></tbody>
     </table>
@@ -144,16 +213,32 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="leadModal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('leadModal').classList.remove('open')">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
 const PASSWORD = "nexlead2026";
 const DASHBOARD_URL = "https://desktop-bsdpr8a.tail0f3da6.ts.net/webhook/dashboard";
 const LEADS_PER_PAGE = 20;
+const FREE_PROVIDERS = ['gmail','yahoo','hotmail','outlook','aol','protonmail','icloud','live','msn'];
 
 let allContacts = [];
 let filteredContacts = [];
 let currentFilter = "all";
+let currentPeriod = "all";
 let currentSearch = "";
 let currentPage = 1;
+let sortField = "date";
+let sortDir = -1;
+let autoRefresh = true;
+let autoTimer = null;
+let prevVids = null;
 
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
@@ -163,9 +248,7 @@ function escapeHtml(str) {
 function getProp(contact, key) {
   if (!contact || !contact.properties || !contact.properties[key]) return "";
   const prop = contact.properties[key];
-  if (prop && typeof prop === 'object' && 'value' in prop) {
-    return String(prop.value);
-  }
+  if (prop && typeof prop === 'object' && 'value' in prop) return String(prop.value);
   return String(prop);
 }
 
@@ -178,29 +261,19 @@ function getEmail(contact) {
   } catch(e) { return ""; }
 }
 
+function isProEmail(email) {
+  if (!email) return false;
+  const domain = (email.split('@')[1] || '').split('.')[0].toLowerCase();
+  return domain && !FREE_PROVIDERS.includes(domain);
+}
+
 function getCountryFromEmail(email) {
   if (!email) return "Non spécifié";
   const parts = email.split('@');
   if (parts.length < 2) return "Non spécifié";
-  const domain = parts[1];
-  const tld = domain.split('.').pop().toLowerCase();
-  
-  const map = {
-    'fr': 'France 🇫🇷', 'be': 'Belgique 🇧🇪', 'ch': 'Suisse 🇨🇭', 'ca': 'Canada 🇨🇦',
-    'dz': 'Algérie 🇩🇿', 'ma': 'Maroc 🇲🇦', 'tn': 'Tunisie 🇹🇳', 'ae': 'Émirats 🇦🇪',
-    'qa': 'Qatar 🇶🇦', 'sa': 'Arabie S. 🇸🇦', 'eg': 'Égypte 🇪🇬', 'us': 'USA 🇺🇸',
-    'co.uk': 'UK 🇬🇧', 'uk': 'UK 🇬🇧', 'de': 'Allemagne 🇩🇪', 'es': 'Espagne 🇪🇸', 
-    'it': 'Italie 🇮🇹', 'pt': 'Portugal 🇵🇹', 'nl': 'Pays-Bas 🇳🇱',
-    'jp': 'Japon 🇯🇵', 'cn': 'Chine 🇨🇳', 'in': 'Inde 🇮🇳', 'br': 'Brésil 🇧🇷'
-  };
-  
-  if (map[tld]) return map[tld];
-  
-  const freeProviders = ['gmail', 'yahoo', 'hotmail', 'outlook', 'aol', 'protonmail', 'icloud', 'live', 'msn'];
-  const domainName = domain.split('.')[0].toLowerCase();
-  if (freeProviders.includes(domainName)) return "International 🌍";
-  
-  return "International 🌍";
+  const tld = parts[1].split('.').pop().toLowerCase();
+  const map = { 'fr':'France 🇫🇷','be':'Belgique 🇧🇪','ch':'Suisse 🇨','ca':'Canada 🇨🇦','dz':'Algérie 🇩🇿','ma':'Maroc 🇲','tn':'Tunisie 🇹','ae':'Émirats 🇦🇪','qa':'Qatar 🇶🇦','sa':'Arabie S. 🇸🇦','eg':'Égypte 🇪🇬','us':'USA 🇺🇸','uk':'UK 🇬🇧','de':'Allemagne 🇩🇪','es':'Espagne 🇪🇸','it':'Italie 🇮🇹' };
+  return map[tld] || "International 🌍";
 }
 
 function calculateScore(contact) {
@@ -208,15 +281,8 @@ function calculateScore(contact) {
   if (getProp(contact, "firstname")) score += 15;
   if (getProp(contact, "lastname")) score += 15;
   if (getProp(contact, "company")) score += 30;
-  
   const email = getEmail(contact);
-  if (email) {
-    score += 20;
-    const freeProviders = ['gmail', 'yahoo', 'hotmail', 'outlook', 'aol', 'protonmail', 'icloud'];
-    const domain = email.split('@')[1]?.split('.')[0].toLowerCase();
-    if (!freeProviders.includes(domain)) score += 20;
-  }
-  
+  if (email) { score += 20; if (isProEmail(email)) score += 20; }
   return Math.min(score, 100);
 }
 
@@ -225,150 +291,230 @@ function formatDate(timestamp) {
   const ts = typeof timestamp === 'string' ? parseInt(timestamp, 10) : timestamp;
   if (isNaN(ts)) return new Date().toISOString().slice(0, 10);
   const d = new Date(ts);
-  if (isNaN(d.getTime())) return new Date().toISOString().slice(0, 10);
-  return d.toISOString().slice(0, 10);
+  return isNaN(d.getTime()) ? new Date().toISOString().slice(0, 10) : d.toISOString().slice(0, 10);
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 4500);
+}
+
+function toggleDark() {
+  document.body.classList.toggle("dark");
+  const isDark = document.body.classList.contains("dark");
+  document.getElementById("btnDark").textContent = isDark ? "☀️" : "🌙";
+  try { localStorage.setItem('nexlead_dark', isDark ? '1' : '0'); } catch(e){}
+}
+
+function toggleAuto() {
+  autoRefresh = !autoRefresh;
+  const btn = document.getElementById("btnAuto");
+  btn.textContent = "⏱ Auto: " + (autoRefresh ? "ON" : "OFF");
+  btn.classList.toggle("on", autoRefresh);
+  setupAutoRefresh();
+  showToast(autoRefresh ? "⏱ Actualisation auto toutes les 5 min" : "⏱ Actualisation auto désactivée");
+}
+
+function setupAutoRefresh() {
+  if (autoTimer) clearInterval(autoTimer);
+  if (autoRefresh) autoTimer = setInterval(() => loadDashboard(true), 300000);
+}
+
+function doUnlock() {
+  document.getElementById("lockScreen").style.display = "none";
+  document.getElementById("mainContent").style.display = "block";
+  document.getElementById("currentDate").textContent = new Date().toLocaleDateString('fr-FR', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+  setupAutoRefresh();
+  loadDashboard(false);
 }
 
 function unlock() {
   if (document.getElementById("passInput").value === PASSWORD) {
-    document.getElementById("lockScreen").style.display = "none";
-    document.getElementById("mainContent").style.display = "block";
-    document.getElementById("currentDate").textContent = new Date().toLocaleDateString('fr-FR', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
-    loadDashboard();
+    try {
+      if (document.getElementById("rememberMe").checked) localStorage.setItem('nexlead_pass', PASSWORD);
+      else localStorage.removeItem('nexlead_pass');
+    } catch(e){}
+    doUnlock();
   } else {
     alert("Mot de passe incorrect");
   }
 }
 
-async function loadDashboard() {
+async function loadDashboard(silent) {
   try {
-    document.getElementById("leadsTable").innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--sub);">Chargement...</td></tr>';
-    
+    if (!silent) document.getElementById("leadsTable").innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--sub);">Chargement...</td></tr>';
     const response = await fetch(DASHBOARD_URL);
     if (!response.ok) throw new Error("HTTP " + response.status);
-    
     let rawData = await response.json();
-    
     let data = rawData;
-    if (Array.isArray(rawData) && rawData[0]?.json) {
-      data = rawData[0].json;
-    }
-    
+    if (Array.isArray(rawData) && rawData[0] && rawData[0].json) data = rawData[0].json;
     if (!Array.isArray(data)) data = [data];
 
     allContacts = data.map(c => {
       const email = getEmail(c);
       const score = calculateScore(c);
-      const statut = score >= 70 ? "CHAUD" : (score >= 40 ? "TIEDE" : "FROID");
-      
       return {
+        vid: c.vid,
         firstname: getProp(c, "firstname") || "Sans prénom",
         lastname: getProp(c, "lastname") || "Sans nom",
         email: email,
+        phone: getProp(c, "phone") || getProp(c, "mobilephone"),
         company: getProp(c, "company") || "-",
         country: getCountryFromEmail(email),
+        isPro: isProEmail(email),
         score: score,
-        statut: statut,
+        statut: score >= 70 ? "CHAUD" : (score >= 40 ? "TIEDE" : "FROID"),
         date: formatDate(c.addedAt || getProp(c, "createdate"))
       };
     });
+
+    if (prevVids !== null) {
+      const newLeads = allContacts.filter(c => !prevVids.has(c.vid));
+      if (newLeads.length > 0) {
+        const hotNew = newLeads.filter(l => l.statut === "CHAUD");
+        showToast("🔔 " + newLeads.length + " nouveau(x) lead(s)" + (hotNew.length ? " dont 🔥 " + hotNew.map(h => h.firstname).join(", ") : ""));
+      }
+    }
+    prevVids = new Set(allContacts.map(c => c.vid));
 
     applyFilters();
     updateDashboard();
   } catch (e) {
     console.error("Erreur:", e);
-    document.getElementById("leadsTable").innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--red);">Erreur : ' + escapeHtml(e.message) + '</td></tr>';
+    if (!silent) document.getElementById("leadsTable").innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--red);">Erreur : ' + escapeHtml(e.message) + '</td></tr>';
   }
 }
 
 function applyFilters() {
-  let result = allContacts;
-  
-  if (currentFilter !== "all") {
-    result = result.filter(l => l.statut === currentFilter);
+  let result = allContacts.slice();
+  if (currentFilter !== "all") result = result.filter(l => l.statut === currentFilter);
+  if (currentPeriod !== "all") {
+    const todayKey = new Date().toISOString().slice(0, 10);
+    result = result.filter(l => {
+      if (currentPeriod === "today") return l.date === todayKey;
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - parseInt(currentPeriod, 10));
+      return new Date(l.date) >= cutoff;
+    });
   }
-  
   if (currentSearch.trim()) {
-    const search = currentSearch.toLowerCase();
-    result = result.filter(l => 
-      l.firstname.toLowerCase().includes(search) ||
-      l.lastname.toLowerCase().includes(search) ||
-      l.email.toLowerCase().includes(search) ||
-      l.company.toLowerCase().includes(search) ||
-      l.country.toLowerCase().includes(search)
-    );
+    const s = currentSearch.toLowerCase();
+    result = result.filter(l => (l.firstname + " " + l.lastname + " " + l.email + " " + l.company + " " + l.country).toLowerCase().includes(s));
   }
-  
+  result.sort((a, b) => {
+    let va, vb;
+    if (sortField === "score") { va = a.score; vb = b.score; }
+    else if (sortField === "date") { va = a.date; vb = b.date; }
+    else if (sortField === "name") { va = (a.firstname + a.lastname).toLowerCase(); vb = (b.firstname + b.lastname).toLowerCase(); }
+    else { va = a.company.toLowerCase(); vb = b.company.toLowerCase(); }
+    if (va < vb) return -1 * sortDir;
+    if (va > vb) return 1 * sortDir;
+    return 0;
+  });
   filteredContacts = result;
   currentPage = 1;
 }
 
-function setFilter(filter) {
-  currentFilter = filter;
-  
-  document.querySelectorAll('.stat-card, .filter-btn').forEach(el => {
-    if (el.dataset.filter === filter) {
-      el.classList.add('active');
-    } else {
-      el.classList.remove('active');
-    }
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('[data-filter]').forEach(el => el.classList.toggle('active', el.dataset.filter === f));
+  applyFilters(); renderTable(); renderPagination();
+}
+
+function setPeriod(p) {
+  currentPeriod = p;
+  document.querySelectorAll('[data-period]').forEach(el => el.classList.toggle('active', el.dataset.period === p));
+  applyFilters(); renderTable(); renderPagination();
+}
+
+function setSort(field) {
+  if (sortField === field) sortDir *= -1;
+  else { sortField = field; sortDir = (field === "name" || field === "company") ? 1 : -1; }
+  applyFilters(); renderTable(); renderPagination(); updateSortArrows();
+}
+
+function updateSortArrows() {
+  ["name","company","score","date"].forEach(f => {
+    const el = document.getElementById("th-" + f);
+    if (el) el.querySelector(".sort-arrow").textContent = sortField === f ? (sortDir === 1 ? "▲" : "▼") : "↕";
   });
-  
-  applyFilters();
-  renderTable();
-  renderPagination();
 }
 
 function handleSearch() {
   currentSearch = document.getElementById("searchBox").value;
-  applyFilters();
-  renderTable();
-  renderPagination();
+  applyFilters(); renderTable(); renderPagination();
 }
 
 function renderTable() {
   const start = (currentPage - 1) * LEADS_PER_PAGE;
-  const end = start + LEADS_PER_PAGE;
-  const pageContacts = filteredContacts.slice().reverse().slice(start, end);
-  
+  const pageContacts = filteredContacts.slice(start, start + LEADS_PER_PAGE);
   if (pageContacts.length === 0) {
     document.getElementById("leadsTable").innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--sub);padding:40px;">Aucun lead trouvé</td></tr>';
     return;
   }
-  
-  document.getElementById("leadsTable").innerHTML = pageContacts.map(l => {
-    const name = escapeHtml(l.firstname) + ' ' + escapeHtml(l.lastname);
-    return '<tr><td><strong>' + name + '</strong></td><td>' + escapeHtml(l.company) + '</td><td>' + escapeHtml(l.country) + '</td><td>' + escapeHtml(l.email) + '</td><td>' + l.score + '/100</td><td><span class="badge badge-' + l.statut + '">' + escapeHtml(l.statut) + '</span></td><td>' + escapeHtml(l.date) + '</td></tr>';
-  }).join("");
+  document.getElementById("leadsTable").innerHTML = pageContacts.map(l =>
+    '<tr onclick="openLead(' + l.vid + ')"><td><strong>' + escapeHtml(l.firstname) + ' ' + escapeHtml(l.lastname) + '</strong></td><td>' + escapeHtml(l.company) + '</td><td>' + escapeHtml(l.country) + '</td><td>' + escapeHtml(l.email) + '</td><td>' + l.score + '/100</td><td><span class="badge badge-' + l.statut + '">' + l.statut + '</span></td><td>' + escapeHtml(l.date) + '</td></tr>'
+  ).join("");
 }
 
 function renderPagination() {
   const totalPages = Math.ceil(filteredContacts.length / LEADS_PER_PAGE);
-  const pagination = document.getElementById("pagination");
-  
-  if (totalPages <= 1) {
-    pagination.innerHTML = '';
-    return;
-  }
-  
-  let html = '<button class="page-btn" onclick="goToPage(' + (currentPage - 1) + ')" ' + (currentPage === 1 ? 'disabled' : '') + '>← Précédent</button>';
-  
-  for (let i = 1; i <= totalPages; i++) {
-    html += '<button class="page-btn ' + (i === currentPage ? 'active' : '') + '" onclick="goToPage(' + i + ')">' + i + '</button>';
-  }
-  
-  html += '<button class="page-btn" onclick="goToPage(' + (currentPage + 1) + ')" ' + (currentPage === totalPages ? 'disabled' : '') + '>Suivant →</button>';
-  html += '<span class="page-info">Page ' + currentPage + ' sur ' + totalPages + ' (' + filteredContacts.length + ' leads)</span>';
-  
-  pagination.innerHTML = html;
+  const el = document.getElementById("pagination");
+  if (totalPages <= 1) { el.innerHTML = ''; return; }
+  let html = '<button class="page-btn" onclick="goToPage(' + (currentPage - 1) + ')" ' + (currentPage === 1 ? 'disabled' : '') + '>←</button>';
+  for (let i = 1; i <= totalPages; i++) html += '<button class="page-btn ' + (i === currentPage ? 'active' : '') + '" onclick="goToPage(' + i + ')">' + i + '</button>';
+  html += '<button class="page-btn" onclick="goToPage(' + (currentPage + 1) + ')" ' + (currentPage === totalPages ? 'disabled' : '') + '>→</button>';
+  html += '<span class="page-info">' + filteredContacts.length + ' leads</span>';
+  el.innerHTML = html;
 }
 
-function goToPage(page) {
+function goToPage(p) {
   const totalPages = Math.ceil(filteredContacts.length / LEADS_PER_PAGE);
-  if (page < 1 || page > totalPages) return;
-  currentPage = page;
-  renderTable();
-  renderPagination();
+  if (p < 1 || p > totalPages) return;
+  currentPage = p; renderTable(); renderPagination();
+}
+
+function openLead(vid) {
+  const l = allContacts.find(c => c.vid === vid);
+  if (!l) return;
+  
+  // Message Telegram pré-rempli avec la fiche du lead
+  const tgText = "🔥 Lead NexLead : " + l.firstname + " " + l.lastname +
+    "\n💼 Entreprise : " + l.company +
+    "\n🌍 Pays : " + l.country +
+    "\n📧 Email : " + l.email +
+    (l.phone ? "\n📱 Tél : " + l.phone : "") +
+    "\n📊 Score : " + l.score + "/100 (" + l.statut + ")";
+  const tgLink = "https://t.me/share/url?url=" + encodeURIComponent("NexLead") + "&text=" + encodeURIComponent(tgText);
+  
+  document.getElementById("modalBody").innerHTML =
+    '<h3>' + escapeHtml(l.firstname) + ' ' + escapeHtml(l.lastname) + '</h3>' +
+    '<p class="m-sub"><span class="badge badge-' + l.statut + '">' + l.statut + '</span> &nbsp; Score ' + l.score + '/100</p>' +
+    '<div class="m-row"><span class="m-label">💼 Entreprise</span><span>' + escapeHtml(l.company) + '</span></div>' +
+    '<div class="m-row"><span class="m-label">🌍 Pays</span><span>' + escapeHtml(l.country) + '</span></div>' +
+    '<div class="m-row"><span class="m-label">📧 Email</span><span>' + escapeHtml(l.email) + '</span></div>' +
+    '<div class="m-row"><span class="m-label">📱 Téléphone</span><span>' + (l.phone ? escapeHtml(l.phone) : 'Non renseigné') + '</span></div>' +
+    '<div class="m-row"><span class="m-label">📅 Ajouté le</span><span>' + escapeHtml(l.date) + '</span></div>' +
+    '<div class="m-row"><span class="m-label">💼 Email pro</span><span>' + (l.isPro ? '✅ Oui' : '❌ Non') + '</span></div>' +
+    '<div class="m-actions">' +
+    '<a class="btn btn-mail" href="mailto:' + escapeHtml(l.email) + '">📧 Email</a>' +
+    '<a class="btn btn-tg" target="_blank" href="' + tgLink + '">✈️ Telegram</a>' +
+    '<button class="btn btn-copy" onclick="copyEmail(\'' + escapeHtml(l.email).replace(/'/g, "\\'") + '\')">📋 Copier</button>' +
+    '</div>';
+  document.getElementById("leadModal").classList.add("open");
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById("leadModal")) document.getElementById("leadModal").classList.remove("open");
+}
+
+function copyEmail(email) {
+  try {
+    navigator.clipboard.writeText(email);
+    showToast("📋 Email copié : " + email);
+  } catch(e) { showToast("Copie impossible"); }
 }
 
 function updateDashboard() {
@@ -382,63 +528,104 @@ function updateDashboard() {
   document.getElementById("hot").textContent = hot;
   document.getElementById("warm").textContent = warm;
   document.getElementById("cold").textContent = cold;
-  
   const todayCount = allContacts.filter(l => l.date === today).length;
   document.getElementById("todayLeads").textContent = todayCount > 0 ? "+" + todayCount + " aujourd'hui" : "Aucun aujourd'hui";
 
   if (total > 0) {
-    const hotPct = Math.round(hot/total*100);
-    const warmPct = Math.round(warm/total*100);
-    const coldPct = Math.round(cold/total*100);
-    document.getElementById("hotPct").textContent = hotPct + "%";
-    document.getElementById("warmPct").textContent = warmPct + "%";
-    document.getElementById("coldPct").textContent = coldPct + "%";
-    document.getElementById("hotBar").style.width = hotPct + "%";
-    document.getElementById("warmBar").style.width = warmPct + "%";
-    document.getElementById("coldBar").style.width = coldPct + "%";
+    const hp = Math.round(hot/total*100), wp = Math.round(warm/total*100), cp = Math.round(cold/total*100);
+    document.getElementById("hotPct").textContent = hp + "%"; document.getElementById("hotBar").style.width = hp + "%";
+    document.getElementById("warmPct").textContent = wp + "%"; document.getElementById("warmBar").style.width = wp + "%";
+    document.getElementById("coldPct").textContent = cp + "%"; document.getElementById("coldBar").style.width = cp + "%";
   }
 
-  const countries = {};
-  allContacts.forEach(l => { 
-    const key = l.country || "Inconnu";
-    countries[key] = (countries[key] || 0) + 1; 
-  });
-  
-  document.getElementById("countryStats").innerHTML = Object.entries(countries)
-    .sort((a,b) => b[1]-a[1]).slice(0, 10)
-    .map(([c, n]) => '<div class="bar-label"><span>' + escapeHtml(c) + '</span><span>' + n + ' leads</span></div><div class="bar"><div class="bar-fill" style="width:' + (total > 0 ? Math.round(n/total*100) : 0) + '%;background:var(--purple);"></div></div>').join("");
+  document.getElementById("kpiAvg").textContent = total ? Math.round(allContacts.reduce((s,l) => s + l.score, 0) / total) + "/100" : "-";
+  document.getElementById("kpiPro").textContent = total ? Math.round(allContacts.filter(l => l.isPro).length / total * 100) + "%" : "-";
 
-  renderTable();
-  renderPagination();
+  const countries = {};
+  allContacts.forEach(l => { countries[l.country] = (countries[l.country] || 0) + 1; });
+  const sortedCountries = Object.entries(countries).sort((a,b) => b[1]-a[1]);
+  document.getElementById("kpiCountry").textContent = sortedCountries.length ? sortedCountries[0][0] : "-";
+  document.getElementById("countryStats").innerHTML = sortedCountries.slice(0, 8).map(([c, n]) =>
+    '<div class="bar-label"><span>' + escapeHtml(c) + '</span><span>' + n + ' leads</span></div><div class="bar"><div class="bar-fill" style="width:' + (total ? Math.round(n/total*100) : 0) + '%;background:var(--purple);"></div></div>'
+  ).join("");
+
+  let trendHtml = '', labelsHtml = '';
+  let max = 1;
+  const days = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    const count = allContacts.filter(c => c.date === key).length;
+    days.push({ label: d.getDate() + "/" + (d.getMonth() + 1), count });
+    if (count > max) max = count;
+  }
+  days.forEach(d => {
+    trendHtml += '<div class="trend-bar" style="height:' + Math.round(d.count / max * 100) + '%" title="' + d.label + ' : ' + d.count + ' lead(s)"></div>';
+    labelsHtml += '<span>' + d.label + '</span>';
+  });
+  document.getElementById("trendChart").innerHTML = trendHtml;
+  document.getElementById("trendLabels").innerHTML = labelsHtml;
+
+  const emailCounts = {};
+  allContacts.forEach(l => { if (l.email) emailCounts[l.email] = (emailCounts[l.email] || 0) + 1; });
+  const dupes = Object.entries(emailCounts).filter(([e, n]) => n > 1);
+  document.getElementById("kpiDupes").textContent = dupes.length;
+  const banner = document.getElementById("dupeBanner");
+  if (dupes.length) {
+    banner.style.display = "block";
+    banner.innerHTML = "⚠️ <strong>Doublons détectés :</strong> " + dupes.map(d => escapeHtml(d[0]) + " (×" + d[1] + ")").join(", ");
+  } else banner.style.display = "none";
+
+  renderTable(); renderPagination(); updateSortArrows();
   document.getElementById("lastUpdate").textContent = "Dernière mise à jour : " + new Date().toLocaleTimeString('fr-FR');
 }
 
 function exportCSV() {
-  if (filteredContacts.length === 0) {
-    alert("Aucun lead à exporter");
-    return;
-  }
-  
-  const headers = ['Nom', 'Prénom', 'Entreprise', 'Pays', 'Email', 'Score', 'Statut', 'Date'];
-  const rows = filteredContacts.map(l => [
-    l.lastname, l.firstname, l.company, l.country, l.email, l.score, l.statut, l.date
-  ]);
-  
+  if (filteredContacts.length === 0) { alert("Aucun lead à exporter"); return; }
+  const headers = ['Nom','Prénom','Entreprise','Pays','Email','Téléphone','Score','Statut','Date'];
   let csv = headers.join(',') + '\n';
-  rows.forEach(row => {
-    csv += row.map(cell => '"' + String(cell).replace(/"/g, '""') + '"').join(',') + '\n';
+  filteredContacts.forEach(l => {
+    csv += [l.lastname, l.firstname, l.company, l.country, l.email, l.phone, l.score, l.statut, l.date].map(c => '"' + String(c).replace(/"/g,'""') + '"').join(',') + '\n';
   });
-  
   const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement("a");
-  const url = URL.createObjectURL(blob);
-  link.setAttribute("href", url);
-  link.setAttribute("download", "nexlead_export_" + new Date().toISOString().slice(0, 10) + ".csv");
-  link.style.visibility = 'hidden';
-  document.body.appendChild(link);
+  link.href = URL.createObjectURL(blob);
+  link.download = "nexlead_export_" + new Date().toISOString().slice(0, 10) + ".csv";
   link.click();
-  document.body.removeChild(link);
+  showToast("📥 Export CSV téléchargé (" + filteredContacts.length + " leads)");
 }
+
+function weeklyReport() {
+  const total = allContacts.length;
+  const hot = allContacts.filter(l => l.statut === "CHAUD").length;
+  const warm = allContacts.filter(l => l.statut === "TIEDE").length;
+  const cold = allContacts.filter(l => l.statut === "FROID").length;
+  const week = new Date(); week.setDate(week.getDate() - 7);
+  const weekKey = week.toISOString().slice(0, 10);
+  const newWeek = allContacts.filter(l => l.date >= weekKey).length;
+  const avg = total ? Math.round(allContacts.reduce((s,l) => s + l.score, 0) / total) : 0;
+  const lines = [
+    "📊 RAPPORT NEXLEAD - " + new Date().toLocaleDateString('fr-FR'),
+    "",
+    "• Total leads : " + total,
+    "• Nouveaux (7 jours) : " + newWeek,
+    "• Chauds : " + hot + " | Tièdes : " + warm + " | Froids : " + cold,
+    "• Score moyen : " + avg + "/100",
+    "",
+    "🔥 LEADS CHAUDS A CONTACTER :",
+    ""
+  ];
+  allContacts.filter(l => l.statut === "CHAUD").forEach(l => lines.push(" - " + l.firstname + " " + l.lastname + " (" + l.company + ") : " + l.email));
+  window.location.href = "mailto:?subject=" + encodeURIComponent("Rapport NexLead - " + new Date().toLocaleDateString('fr-FR')) + "&body=" + encodeURIComponent(lines.join("\n"));
+  showToast("📊 Rapport prêt dans votre messagerie");
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  try {
+    if (localStorage.getItem('nexlead_dark') === '1') { document.body.classList.add("dark"); document.getElementById("btnDark").textContent = "☀️"; }
+    if (localStorage.getItem('nexlead_pass') === PASSWORD) { document.getElementById("rememberMe").checked = true; doUnlock(); }
+  } catch(e){}
+});
 </script>
 </body>
 </html>
